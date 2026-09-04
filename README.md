@@ -6,6 +6,8 @@ I build practical digital systems that solve real business problems — from web
 
 My focus is not just building interfaces. I like connecting the full system: **product → workflow → data → growth → iteration**.
 
+**Portfolio:** https://yopisimoni.github.io
+
 ## What I build
 
 - Responsive websites and web applications
@@ -25,11 +27,13 @@ UK property seller information and lead-generation platform combining frontend d
 ### Mouna Cosmetics
 Modern cosmetics storefront prototype built with Next.js, React, TypeScript, and Tailwind CSS.
 
+**Live:** https://mouna-cosmetics.vercel.app  
 **Repository:** https://github.com/yopisimoni/mouna-cosmetics
 
 ### Aesthetic Social Studio
 Service-business validation project combining landing-page development, prospect research, personalized outreach, content concepts, and conversion-focused design.
 
+**Live:** https://yopisimoni.github.io/aesthetic-social-studio/  
 **Repository:** https://github.com/yopisimoni/aesthetic-social-studio
 
 ### AI Tools Hub
@@ -44,10 +48,6 @@ AI tools discovery and community prototype focused on helping users find, rank, 
 ## Current focus
 
 Building small, useful products that can be tested with real users, measured, improved, and turned into sustainable businesses.
-
-## Portfolio
-
-**https://yopisimoni.github.io**
 
 ---
 
