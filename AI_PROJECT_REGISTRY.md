@@ -1,46 +1,79 @@
 # AI Project Registry
 
-This file is the canonical GitHub project map for AI-assisted work on the yopisimoni account.
+Canonical map for GitHub work on `yopisimoni`.
 
-## Rule zero
-Before editing any repository:
-1. Identify the exact project requested by the user.
-2. Match it to this registry.
-3. Open that repository's `AGENTS.md`.
-4. Open that repository's `.chatgpt/PROJECT_CONTROL.md`.
-5. Do not edit an unclassified repository until its purpose is verified.
+## Selection rule
 
-## Canonical active projects
+Before editing:
+1. identify the project;
+2. use the canonical repository below;
+3. read repo instructions if present;
+4. inspect current files;
+5. never switch to a similar repo by name alone;
+6. report committed, deployed, and live-verified states separately.
 
-| Project | Canonical repository | Primary domain / intended domain | Relationship | Status rule |
-|---|---|---|---|---|
-| MyFastOffer4U UK | `yopisimoni/MyFastOffer4U` | https://myfastoffer4u.com | Main UK property project | Verify production deployment before claiming a GitHub commit is live |
-| MyFastOffer4U France | `yopisimoni/MyFastOffer4U-France` | https://fr.myfastoffer4u.com | Separate France product | Never reuse UK project identifiers or assumptions |
-| NEXT | `yopisimoni/next.myfastoffer4u.com` | https://next.myfastoffer4u.com | Separate AI-focused project in MyFastOffer4U ecosystem | Treat deployment/DNS/analytics as unverified until checked |
-| MarocVows | `yopisimoni/marocvows` | https://www.marocvows.com/ | Separate Morocco wedding platform | Never mix with MyFastOffer4U |
+## Active / current
 
-## Special scope notes
-- Landlord Exit Hub belongs to the MyFastOffer4U ecosystem, but it is not interchangeable with the main UK site. Only work on it when the task explicitly targets Landlord Exit Hub.
-- Other repositories on the account may be experiments, archived work, old versions, or unrelated products. Do not assume they are current.
-- Similar names are not enough to establish identity.
+| Project | Repository | Status |
+|---|---|---|
+| MyFastOffer4U UK | `yopisimoni/MyFastOffer4U` | ACTIVE CORE |
+| MyFastOffer4U France | `yopisimoni/MyFastOffer4U-France` | ACTIVE CORE |
+| NEXT / AI Problem Solver | `yopisimoni/ai-hub-last` | ACTIVE BUILD; canonical NEXT implementation |
+| MarocVows | `yopisimoni/marocvows` | ACTIVE CORE |
+| Portfolio | `yopisimoni/yopisimoni.github.io` | ACTIVE PRODUCTION |
+| HUG Cafe QR Ordering | `yopisimoni/-hug-cafe-qr-order` | ACTIVE DEVELOPMENT |
+| Saudi Work Connect / EarnPlan | `yopisimoni/project-earnplan` | ACTIVE VALIDATION |
+| Mouna Cosmetics | `yopisimoni/mouna-cosmetics` | ACTIVE PORTFOLIO PROTOTYPE |
 
-## Cross-project safety rules
-- Never copy analytics IDs between projects unless explicitly requested and verified.
-- Never copy DNS, CNAME, redirects, environment variables, forms, partner settings, or authentication settings between projects by assumption.
-- Never report "done" only because a commit succeeded.
-- For production tasks, verify the actual live target after deployment.
-- If the user's request is ambiguous, resolve it against this registry before editing.
+## Reserved
 
-## Completion standard
-A production-affecting task is complete only when all applicable checks pass:
-- correct repository selected;
-- current files inspected;
-- smallest safe change committed;
-- deployment status checked;
-- production URL tested;
-- requested behavior confirmed;
-- no obvious regression;
-- project record remains isolated from unrelated repos.
+| Repository | Status |
+|---|---|
+| `yopisimoni/next.myfastoffer4u.com` | RESERVED / EMPTY SCAFFOLD; not current NEXT implementation |
 
-## Unclassified repositories
-Any repository not listed above is unclassified for AI-assisted production work until its current purpose is verified.
+## Paused
+
+| Repository | Status |
+|---|---|
+| `yopisimoni/aesthetic-social-studio` | PAUSED VALIDATION |
+| `yopisimoni/auto-facebook-post` | PAUSED EXPERIMENT |
+
+## Portfolio prototypes
+
+| Repository | Status |
+|---|---|
+| `yopisimoni/ai-hub-tools` | OLDER AI TOOLS PROTOTYPE; not NEXT canonical |
+| `yopisimoni/sell-house-fast` | PROPERTY LANDING-PAGE PROTOTYPE |
+| `yopisimoni/date-night-reimagined` | LOVABLE PROTOTYPE |
+
+## Legacy / duplicates
+
+| Repository | Status |
+|---|---|
+| `yopisimoni/ai-hub-pro` | LEGACY AI HUB |
+| `yopisimoni/ai-hub-pro-final` | LEGACY / EMPTY |
+| `yopisimoni/ai-hub-tools-` | LEGACY DUPLICATE |
+
+## Control
+
+| Repository | Status |
+|---|---|
+| `yopisimoni/yopisimoni` | PORTFOLIO CONTROL REPOSITORY |
+
+## External / non-canonical
+
+| Repository | Status |
+|---|---|
+| `yopisimoni/agent-pane` | EXTERNAL CODEBASE / STUDY; do not treat as a canonical product |
+
+## NEXT resolution
+
+`yopisimoni/ai-hub-last` contains the working NEXT MVP and identifies itself as the source of truth. `yopisimoni/next.myfastoffer4u.com` is currently only the reserved domain-named scaffold. Use `ai-hub-last` for NEXT implementation work unless an explicit migration is made.
+
+## Special note
+
+Landlord Exit Hub is part of the MyFastOffer4U ecosystem, but no separate canonical GitHub repository is established here. Verify its actual file location before editing it.
+
+## Cross-project rule
+
+Never mix project-specific domains, analytics, deployment settings, forms, content, or requirements between repositories by assumption. A commit alone does not mean a production change is live.
