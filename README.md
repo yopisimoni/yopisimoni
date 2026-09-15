@@ -47,6 +47,12 @@ France-focused consumer guidance product with localized UX, recurring-cost analy
 **Live:** https://fr.myfastoffer4u.com  
 **Repository:** https://github.com/yopisimoni/MyFastOffer4U-France
 
+### AI Ops Router
+Public engineering proof inside AI Hub Tools: a Next.js / TypeScript request-triage workflow with Zod validation, optional Gemini classification, deterministic fallback logic, Supabase REST persistence, and an n8n webhook handoff.
+
+**Repository:** https://github.com/yopisimoni/ai-hub-tools  
+**Code:** `src/app/automation-lab` + `src/app/api/triage`
+
 ### Content Automation Engine
 Modular workflow for planning, generating, reviewing, organizing, and distributing content with APIs, automation tooling, Docker, and AI-assisted steps.
 
