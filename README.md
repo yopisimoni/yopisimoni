@@ -1,54 +1,61 @@
 # Simohamed Amara
 
-**Developer · Automation Builder · AI Workflows · Digital Products**
+**Web Developer · Website Fixes · WordPress · Next.js · Automation**
 
-I build practical digital systems that solve real business problems — from websites and web apps to automation workflows, lead-generation systems, analytics, and AI-assisted tools.
+I help fix concrete website problems: broken layouts, mobile issues, forms that do not work, WordPress problems, frontend bugs, analytics/tracking issues, and small web features.
 
-My focus is not just building interfaces. I like connecting the full system: **product → workflow → data → growth → iteration**.
+For a first job, I prefer a **small, clearly scoped problem with a visible result**.
 
-**Portfolio:** https://yopisimoni.github.io
+**Portfolio & starting prices:** https://yopisimoni.github.io
 
-## What I build
+## Website fix services
 
-- Responsive websites and web applications
-- Business automation and API workflows
-- AI-assisted tools and content systems
-- Lead-generation funnels and landing pages
-- Analytics, SEO, and conversion tracking
-- Rapid MVPs for testing real business ideas
+- **Quick website fix — from $25**
+  - Broken buttons, links, CSS, JavaScript, or responsive layout issues
+- **Page / WordPress repair — from $60**
+  - WordPress troubleshooting, landing-page cleanup, forms, mobile UX, basic tracking
+- **Small feature / automation — from $120**
+  - Next.js / React work, API integrations, analytics, or focused automation workflows
 
-## Selected work
+Exact scope and price are agreed before work starts.
+
+## What I work with
+
+`HTML` · `CSS` · `JavaScript` · `TypeScript` · `React` · `Next.js` · `Tailwind CSS` · `WordPress` · `REST APIs` · `GitHub Actions` · `GA4` · `SEO` · `Automation`
+
+## Proof of work
 
 ### MyFastOffer4U
-UK property seller information and lead-generation platform combining frontend development, SEO architecture, analytics, referral workflows, and operational systems.
+UK property seller platform with seller enquiry flows, partner referral logic, technical SEO, analytics, content infrastructure, and frontend work.
 
-**Live:** https://myfastoffer4u.com
+- Live: https://myfastoffer4u.com
+- Code: https://github.com/yopisimoni/MyFastOffer4U
+
+### MarocVows
+Multilingual Moroccan wedding-service discovery platform with marketplace UX and local SEO foundations.
+
+- Live: https://marocvows.com
+- Code: https://github.com/yopisimoni/marocvows
+
+### HUG Cafe QR Ordering
+Mobile-first café ordering application with QR table access, menu browsing, cart flow, order confirmation, and admin workflow.
+
+- Code: https://github.com/yopisimoni/-hug-cafe-qr-order
+
+### MyFastOffer4U France
+France-focused localized property product with separate analytics and product logic.
+
+- Live: https://fr.myfastoffer4u.com
+- Code: https://github.com/yopisimoni/MyFastOffer4U-France
 
 ### Mouna Cosmetics
-Modern cosmetics storefront prototype built with Next.js, React, TypeScript, and Tailwind CSS.
+Next.js / React / TypeScript storefront prototype.
 
-**Live:** https://mouna-cosmetics.vercel.app  
-**Repository:** https://github.com/yopisimoni/mouna-cosmetics
+- Live: https://mouna-cosmetics.vercel.app
+- Code: https://github.com/yopisimoni/mouna-cosmetics
 
-### Aesthetic Social Studio
-Service-business validation project combining landing-page development, prospect research, personalized outreach, content concepts, and conversion-focused design.
+## How to contact me
 
-**Live:** https://yopisimoni.github.io/aesthetic-social-studio/  
-**Repository:** https://github.com/yopisimoni/aesthetic-social-studio
+Have a website problem? Send the **URL**, a short description of **what is broken**, and **what you expect to happen**.
 
-### AI Tools Hub
-AI tools discovery and community prototype focused on helping users find, rank, and discuss useful AI products.
-
-**Repository:** https://github.com/yopisimoni/ai-hub-tools
-
-## Tech I work with
-
-`HTML` · `CSS` · `JavaScript` · `TypeScript` · `React` · `Next.js` · `Tailwind CSS` · `APIs` · `GitHub Actions` · `Automation` · `Analytics` · `SEO` · `AI Workflows`
-
-## Current focus
-
-Building small, useful products that can be tested with real users, measured, improved, and turned into sustainable businesses.
-
----
-
-> Build useful things. Test them with real people. Improve what works.
+Portfolio: https://yopisimoni.github.io
