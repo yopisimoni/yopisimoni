@@ -1,61 +1,73 @@
 # Simohamed Amara
 
-**Web Developer · Website Fixes · WordPress · Next.js · Automation**
+**Full-Stack Developer · Product Engineering · AI Automation**
 
-I help fix concrete website problems: broken layouts, mobile issues, forms that do not work, WordPress problems, frontend bugs, analytics/tracking issues, and small web features.
+I build practical digital products and the systems behind them — web applications, frontend experiences, APIs, automation workflows, analytics, technical SEO, and operational tooling.
 
-For a first job, I prefer a **small, clearly scoped problem with a visible result**.
+**Portfolio:** https://yopisimoni.github.io
 
-**Portfolio & starting prices:** https://yopisimoni.github.io
+## What I work across
 
-## Website fix services
+**Product & frontend engineering**  
+TypeScript · JavaScript · React · Next.js · Tailwind CSS · HTML · CSS · Responsive UX
 
-- **Quick website fix — from $25**
-  - Broken buttons, links, CSS, JavaScript, or responsive layout issues
-- **Page / WordPress repair — from $60**
-  - WordPress troubleshooting, landing-page cleanup, forms, mobile UX, basic tracking
-- **Small feature / automation — from $120**
-  - Next.js / React work, API integrations, analytics, or focused automation workflows
+**Backend, data & integrations**  
+REST APIs · Supabase · Webhooks · Forms · Lead routing · Data flows
 
-Exact scope and price are agreed before work starts.
+**Automation & AI systems**  
+n8n · Docker · AI-assisted workflows · API orchestration · Content automation
 
-## What I work with
+**Growth & measurement**  
+GA4 · Google Search Console · Technical SEO · Conversion tracking · Structured data · Content architecture
 
-`HTML` · `CSS` · `JavaScript` · `TypeScript` · `React` · `Next.js` · `Tailwind CSS` · `WordPress` · `REST APIs` · `GitHub Actions` · `GA4` · `SEO` · `Automation`
+**Web operations & debugging**  
+WordPress · DNS · Redirects · Performance · GitHub Actions · Bug reproduction · Regression testing · Technical QA
 
-## Proof of work
+## Selected products
 
 ### MyFastOffer4U
-UK property seller platform with seller enquiry flows, partner referral logic, technical SEO, analytics, content infrastructure, and frontend work.
+UK property seller platform combining seller guidance, lead capture, partner referral workflows, analytics, technical SEO, and operational infrastructure.
 
-- Live: https://myfastoffer4u.com
-- Code: https://github.com/yopisimoni/MyFastOffer4U
+**Live:** https://myfastoffer4u.com
 
 ### MarocVows
-Multilingual Moroccan wedding-service discovery platform with marketplace UX and local SEO foundations.
+Multilingual Moroccan wedding discovery platform built around city discovery, provider listings, marketplace UX, and local SEO.
 
-- Live: https://marocvows.com
-- Code: https://github.com/yopisimoni/marocvows
+**Live:** https://www.marocvows.com  
+**Repository:** https://github.com/yopisimoni/marocvows
 
 ### HUG Cafe QR Ordering
-Mobile-first café ordering application with QR table access, menu browsing, cart flow, order confirmation, and admin workflow.
+Mobile-first café ordering application with QR table access, menu browsing, cart state, customer names, order confirmation, admin controls, payment status, and menu-import workflows.
 
-- Code: https://github.com/yopisimoni/-hug-cafe-qr-order
+**Stack:** Next.js · TypeScript · Tailwind · Responsive UX · Admin workflows
 
 ### MyFastOffer4U France
-France-focused localized property product with separate analytics and product logic.
+France-focused consumer guidance product with localized UX, recurring-cost analysis, analytics, content architecture, and subscription logic.
 
-- Live: https://fr.myfastoffer4u.com
-- Code: https://github.com/yopisimoni/MyFastOffer4U-France
+**Live:** https://fr.myfastoffer4u.com  
+**Repository:** https://github.com/yopisimoni/MyFastOffer4U-France
 
-### Mouna Cosmetics
-Next.js / React / TypeScript storefront prototype.
+### Content Automation Engine
+Modular workflow for planning, generating, reviewing, organizing, and distributing content with APIs, automation tooling, Docker, and AI-assisted steps.
 
-- Live: https://mouna-cosmetics.vercel.app
-- Code: https://github.com/yopisimoni/mouna-cosmetics
+**Stack:** n8n · Docker · APIs · AI workflows · Automation
 
-## How to contact me
+## More public work
 
-Have a website problem? Send the **URL**, a short description of **what is broken**, and **what you expect to happen**.
+- [AI Hub Tools](https://github.com/yopisimoni/ai-hub-tools)
+- [Aesthetic Social Studio](https://github.com/yopisimoni/aesthetic-social-studio)
+- [Mouna Cosmetics](https://github.com/yopisimoni/mouna-cosmetics)
+- [Browse all repositories](https://github.com/yopisimoni?tab=repositories)
 
-Portfolio: https://yopisimoni.github.io
+## How I approach projects
+
+1. **Understand the problem** — define the user, business goal, and expected result.
+2. **Build the system** — interface, logic, integrations, automation, and measurement.
+3. **Verify and improve** — test the outcome, inspect the data, and refine what matters.
+
+## Contact
+
+**Portfolio:** https://yopisimoni.github.io  
+**Email:** simohamed.amara@gmail.com
+
+Open to selected freelance, product-development, automation, and technical problem-solving work.
