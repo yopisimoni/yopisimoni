@@ -18,7 +18,7 @@ Before editing:
 |---|---|---|
 | MyFastOffer4U UK | `yopisimoni/MyFastOffer4U` | ACTIVE CORE |
 | MyFastOffer4U France | `yopisimoni/MyFastOffer4U-France` | ACTIVE CORE |
-| NEXT / AI Problem Solver | `yopisimoni/ai-hub-last` | ACTIVE BUILD; canonical NEXT implementation |
+| NEXT / AI Problem Solver | `yopisimoni/ai-hub-last` | PAUSED / RESUME LATER; canonical NEXT implementation |
 | MarocVows | `yopisimoni/marocvows` | ACTIVE CORE |
 | Portfolio | `yopisimoni/yopisimoni.github.io` | ACTIVE PRODUCTION |
 | HUG Cafe QR Ordering | `yopisimoni/-hug-cafe-qr-order` | ACTIVE DEVELOPMENT |
@@ -69,6 +69,31 @@ Before editing:
 ## NEXT resolution
 
 `yopisimoni/ai-hub-last` contains the working NEXT MVP and identifies itself as the source of truth. `yopisimoni/next.myfastoffer4u.com` is currently only the reserved domain-named scaffold. Use `ai-hub-last` for NEXT implementation work unless an explicit migration is made.
+
+## NEXT verified state — 2026-09-15
+
+Completed and verified:
+- problem-first homepage and workflow library;
+- six initial workflow categories;
+- reusable workflow detail pages;
+- analytics event instrumentation;
+- configurable GA4 loading through `NEXT_PUBLIC_GA_MEASUREMENT_ID`;
+- tracked events: `navigation_click`, `cta_click`, `workflow_library_view`, `workflow_open`, and `workflow_view`;
+- GitHub Actions typecheck passed;
+- GitHub Actions production build passed;
+- verification PR #3 merged to `main`.
+
+Still intentionally not completed:
+- NEXT-specific GA4 property / measurement ID;
+- email capture / lead magnet;
+- affiliate disclosure and link management;
+- structured data / schema;
+- full browser/mobile route QA;
+- production deployment;
+- DNS connection for `next.myfastoffer4u.com`.
+
+Resume point:
+**Email capture / lead magnet**, then conversion QA, then deployment preparation.
 
 ## Special note
 
