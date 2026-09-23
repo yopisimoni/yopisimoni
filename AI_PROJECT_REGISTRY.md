@@ -104,6 +104,31 @@ Landlord Exit Hub is part of the MyFastOffer4U ecosystem, but no separate canoni
 Never mix project-specific domains, analytics, deployment settings, forms, content, or requirements between repositories by assumption. A commit alone does not mean a production change is live.
 
 
+
+## Standard website QA stack — added 2026-09-23
+
+Use this baseline for every active/public website before major SEO or content changes and after deployment:
+
+1. **LibreCrawl** — technical crawl, links, metadata, headings, crawl structure, exportable issue inventory.
+2. **GEO Optimizer / GeoReady CLI** — AI-search/AEO/GEO readiness, AI bot access, llms.txt, JSON-LD, citability, topical authority, drift/regression checks.
+3. **Google Search Console** — indexing, queries, coverage, sitemap and search-performance validation.
+4. **PageSpeed / Core Web Vitals** — performance and UX checks.
+5. **Analytics + Microsoft Clarity** — real-user acquisition and behavior evidence.
+6. **Fix only verified issues, then recrawl/re-audit and record before/after state.**
+
+### GEO Optimizer operating rule
+
+- Approved for use across the portfolio as an **audit and monitoring tool**.
+- Prefer read-only commands first: `geo audit`, `geo authority`, `geo perception`, `geo monitor`, `geo drift`.
+- Do **not** run `geo fix --apply` against a production website automatically.
+- Review any proposed robots.txt, llms.txt, schema, metadata, or AI-discovery changes before deployment.
+- Initial reference implementation: **MyFastOffer4U UK**, then reuse the validated process for other public sites.
+- Recommended baseline command:
+  `uvx --from geo-optimizer-skill geo audit --url https://myfastoffer4u.com --save-history --regression`
+- Recommended sitemap pass:
+  `uvx --from geo-optimizer-skill geo audit --sitemap https://myfastoffer4u.com/sitemap.xml --max-urls 25`
+
+
 ## Current execution lock — 2026-09-16
 
 Until the first validation cycle of the **24-Hour Lead Response Automation** offer is completed:
