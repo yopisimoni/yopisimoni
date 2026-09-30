@@ -55,6 +55,8 @@ export async function createDelivery(
       assigned_at: null,
       picked_up_at: null,
       delivered_at: null,
+      ...(typeof input.pickupLat === "number" ? { pickup_lat: input.pickupLat } : {}),
+      ...(typeof input.pickupLng === "number" ? { pickup_lng: input.pickupLng } : {}),
     },
     permissions: [
       Permission.read(Role.user(customer.$id)),
