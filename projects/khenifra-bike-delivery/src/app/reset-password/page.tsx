@@ -1,19 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { CheckCircle2, LockKeyhole } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import BrandMark from "@/components/BrandMark";
 import { resetPassword } from "@/lib/appwrite/auth";
 
 export default function ResetPasswordPage() {
-  const params = useSearchParams();
-  const userId = useMemo(() => params.get("userId") || "", [params]);
-  const secret = useMemo(() => params.get("secret") || "", [params]);
+  const [userId, setUserId] = useState("");
+  const [secret, setSecret] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setUserId(params.get("userId") || "");
+    setSecret(params.get("secret") || "");
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
