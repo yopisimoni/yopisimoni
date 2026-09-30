@@ -12,7 +12,9 @@
     "mobile:add:ios": "npx cap add ios",
     "mobile:sync": "npx cap sync",
     "mobile:android": "npx cap sync android && npx cap open android",
-    "mobile:ios": "npx cap sync ios && npx cap open ios"
+    "mobile:ios": "npx cap sync ios && npx cap open ios",
+    "mobile:configure": "node scripts/configure-native.mjs",
+    "mobile:setup": "npm install && npm run mobile:add:android && npm run mobile:add:ios && npm run mobile:configure && npm run mobile:sync"
   },
   "dependencies": {
     "next": "latest",
