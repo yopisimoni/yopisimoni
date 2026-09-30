@@ -94,3 +94,26 @@ export async function setRiderAvailability({
     permissions,
   });
 }
+
+
+export async function updateAssignedDelivery(
+  deliveryId: string,
+  action: "advance" | "deliver",
+  pin?: string
+) {
+  const jwt = await account.createJWT();
+  const response = await fetch("/api/rider/deliveries", {
+    method: "PATCH",
+    headers: {
+      "content-type": "application/json",
+      "x-appwrite-jwt": jwt.jwt,
+    },
+    body: JSON.stringify({ deliveryId, action, pin }),
+  });
+
+  const json = await response.json();
+  if (!response.ok) {
+    throw new Error(json.error || json.detail || "Could not update delivery");
+  }
+  return json;
+}
