@@ -1,7 +1,11 @@
 import { Account, Client, TablesDB } from "appwrite";
 
-const endpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
-const projectId = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID;
+const endpoint =
+  process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT ||
+  "https://fra.cloud.appwrite.io/v1";
+const projectId =
+  process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID ||
+  "6abc6d6f002d62e54e76";
 
 export const isAppwriteConfigured = Boolean(endpoint && projectId);
 
