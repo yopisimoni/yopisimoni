@@ -102,6 +102,7 @@ const ServiceIcons = [UtensilsCrossed, Store, FileText, Package];
 export default function Home() {
   const [lang, setLang] = useState<Lang>("ar");
   const [orderCode, setOrderCode] = useState("");
+  const [deliveryPin, setDeliveryPin] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [pickupCoords, setPickupCoords] = useState<{lat:number;lng:number} | null>(null);
@@ -127,6 +128,7 @@ export default function Home() {
         pickupLng: pickupCoords?.lng,
       });
       setOrderCode(delivery.orderCode);
+      setDeliveryPin(delivery.deliveryPin || "");
     } catch (error) {
       console.error(error);
       setSubmitError(
@@ -190,7 +192,14 @@ export default function Home() {
               <span className="status">{t.created}</span>
               <div className="orderBadge">{orderCode}</div>
               <p><strong>{t.status}:</strong> {t.statusValue}</p>
-              <button type="button" onClick={() => setOrderCode("")}>{t.reset}</button>
+              {deliveryPin ? (
+                <div className="deliveryPinCard">
+                  <small>{lang === "ar" ? "رمز تأكيد التسليم" : lang === "fr" ? "Code de livraison" : "Delivery PIN"}</small>
+                  <strong>{deliveryPin}</strong>
+                  <span>{lang === "ar" ? "أعطِ هذا الرمز للسائق فقط عند استلام طلبك." : lang === "fr" ? "Donnez ce code au livreur uniquement lorsque vous recevez votre commande." : "Give this PIN to the rider only when you receive your order."}</span>
+                </div>
+              ) : null}
+              <button type="button" onClick={() => { setOrderCode(""); setDeliveryPin(""); }}>{t.reset}</button>
             </div>
           ) : (
             <form onSubmit={submitRequest}>
