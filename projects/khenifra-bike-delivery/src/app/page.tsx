@@ -18,6 +18,7 @@ import {
 import BrandMark from "@/components/BrandMark";
 import SiteNav from "@/components/SiteNav";
 import { createDelivery } from "@/lib/appwrite/deliveries";
+import { getCurrentAppPosition } from "@/lib/location";
 
 type Lang = "ar" | "fr" | "en";
 
@@ -203,19 +204,15 @@ export default function Home() {
               </div>
               <h2>{t.where}</h2>
               <div className="labelActionRow"><label><MapPin size={15}/>{t.pickup}</label><button type="button" className="locationMiniButton" onClick={() => {
-                if (!navigator.geolocation) return;
                 setLocating(true);
-                navigator.geolocation.getCurrentPosition(
-                  (position) => {
-                    setPickupCoords({ lat: position.coords.latitude, lng: position.coords.longitude });
-                    setLocating(false);
-                  },
-                  () => {
+                void getCurrentAppPosition()
+                  .then((position) => {
+                    setPickupCoords({ lat: position.latitude, lng: position.longitude });
+                  })
+                  .catch(() => {
                     setSubmitError(lang === "ar" ? "لم يتم منح إذن الموقع. يمكنك متابعة الطلب بالعنوان فقط." : lang === "fr" ? "Permission de localisation refusée. Vous pouvez continuer avec l'adresse." : "Location permission denied. You can continue with the address.");
-                    setLocating(false);
-                  },
-                  { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-                );
+                  })
+                  .finally(() => setLocating(false));
               }}><Navigation size={14}/>{pickupCoords ? (lang==="ar"?"تم تحديد الموقع":lang==="fr"?"Position ajoutée":"Location added") : locating ? "..." : (lang==="ar"?"استخدم موقعي":lang==="fr"?"Ma position":"Use my location")}</button></div>
               <input name="pickup" required placeholder={t.pickupPlaceholder} />
               <label><Navigation size={15}/>{t.dropoff}</label>
