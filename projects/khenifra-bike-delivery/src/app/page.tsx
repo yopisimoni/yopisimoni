@@ -104,6 +104,8 @@ export default function Home() {
   const [orderCode, setOrderCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [pickupCoords, setPickupCoords] = useState<{lat:number;lng:number} | null>(null);
+  const [locating, setLocating] = useState(false);
   const t = copy[lang];
   const rtl = lang === "ar";
 
@@ -121,6 +123,8 @@ export default function Home() {
         senderPhone: String(form.get("senderPhone") || ""),
         recipientPhone: String(form.get("recipientPhone") || ""),
         notes: String(form.get("notes") || ""),
+        pickupLat: pickupCoords?.lat,
+        pickupLng: pickupCoords?.lng,
       });
       setOrderCode(delivery.orderCode);
     } catch (error) {
@@ -195,7 +199,21 @@ export default function Home() {
                 <Navigation size={22}/>
               </div>
               <h2>{t.where}</h2>
-              <label><MapPin size={15}/>{t.pickup}</label>
+              <div className="labelActionRow"><label><MapPin size={15}/>{t.pickup}</label><button type="button" className="locationMiniButton" onClick={() => {
+                if (!navigator.geolocation) return;
+                setLocating(true);
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    setPickupCoords({ lat: position.coords.latitude, lng: position.coords.longitude });
+                    setLocating(false);
+                  },
+                  () => {
+                    setSubmitError(lang === "ar" ? "لم يتم منح إذن الموقع. يمكنك متابعة الطلب بالعنوان فقط." : lang === "fr" ? "Permission de localisation refusée. Vous pouvez continuer avec l'adresse." : "Location permission denied. You can continue with the address.");
+                    setLocating(false);
+                  },
+                  { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+                );
+              }}><Navigation size={14}/>{pickupCoords ? (lang==="ar"?"تم تحديد الموقع":lang==="fr"?"Position ajoutée":"Location added") : locating ? "..." : (lang==="ar"?"استخدم موقعي":lang==="fr"?"Ma position":"Use my location")}</button></div>
               <input name="pickup" required placeholder={t.pickupPlaceholder} />
               <label><Navigation size={15}/>{t.dropoff}</label>
               <input name="dropoff" required placeholder={t.dropoffPlaceholder} />
