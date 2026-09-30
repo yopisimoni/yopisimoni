@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Award,
   Bike,
@@ -14,6 +14,7 @@ import {
   Star,
   TrendingUp,
 } from "lucide-react";
+import { adminFetch } from "@/lib/appwrite/admin-client";
 
 type Summary = {
   totalDeliveries: number;
@@ -50,7 +51,6 @@ type Delivery = {
 };
 
 export default function AnalyticsPage() {
-  const [passcode, setPasscode] = useState("");
   const [summary, setSummary] = useState<Summary | null>(null);
   const [riders, setRiders] = useState<RiderStat[]>([]);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
@@ -59,30 +59,23 @@ export default function AnalyticsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("kbd-admin-passcode") || "";
-    if (saved) {
-      setPasscode(saved);
-      void load(saved);
-    }
+    void load();
   }, []);
 
-  async function load(code = passcode) {
+  async function load() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/admin/analytics", {
-        headers: { "x-admin-passcode": code },
-        cache: "no-store",
-      });
+      const response = await adminFetch("/api/admin/analytics", { cache: "no-store" });
       const json = await response.json();
-      if (!response.ok) {
-        if (response.status === 401) throw new Error("رمز الإدارة غير صحيح");
-        throw new Error(json.detail || "تعذر تحميل التحليلات");
+      if (response.status === 401) {
+        window.location.href = "/admin/login";
+        return;
       }
+      if (!response.ok) throw new Error(json.detail || "تعذر تحميل التحليلات");
       setSummary(json.summary);
       setRiders(json.riderStats || []);
       setDeliveries(json.deliveries || []);
-      sessionStorage.setItem("kbd-admin-passcode", code);
       setReady(true);
     } catch (err) {
       setReady(false);
@@ -92,32 +85,10 @@ export default function AnalyticsPage() {
     }
   }
 
-  async function login(event: FormEvent) {
-    event.preventDefault();
-    await load(passcode);
-  }
-
   if (!ready) {
     return (
       <main dir="rtl" className="adminPage">
-        <div className="adminLogin elevatedCard">
-          <span className="status">Khenifra Delivery Analytics</span>
-          <h1>لوحة الأداء والأرباح</h1>
-          <p>أدخل رمز الإدارة لعرض أداء السائقين والتوصيلات.</p>
-          <form onSubmit={login}>
-            <label>رمز الإدارة</label>
-            <input
-              type="password"
-              value={passcode}
-              onChange={(event) => setPasscode(event.target.value)}
-              required
-            />
-            <button type="submit" disabled={loading}>
-              {loading ? "جارٍ التحميل..." : "دخول"}
-            </button>
-          </form>
-          {error ? <p className="formError">{error}</p> : null}
-        </div>
+        <div className="loadingCard"><LayoutDashboard/><span>{loading ? "جارٍ تحميل التحليلات..." : error || "يجب تسجيل دخول الإدارة."}</span></div>
       </main>
     );
   }
