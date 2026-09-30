@@ -16,6 +16,7 @@ import {
   Truck,
 } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
+import { getCurrentAppPosition, watchAppPosition } from "@/lib/location";
 import {
   getMyRiderState,
   setRiderAvailability,
@@ -71,8 +72,10 @@ export default function RiderDashboard() {
   useEffect(() => { void load(); }, []);
 
   useEffect(() => {
-    if (!state?.location?.is_available || !navigator.geolocation) return;
+    if (!state?.location?.is_available) return;
 
+    let stopped = false;
+    let stopWatch: (() => void) | undefined;
     let lastSent = 0;
     let lastLat = Number(state.location.lat);
     let lastLng = Number(state.location.lng);
@@ -88,66 +91,59 @@ export default function RiderDashboard() {
       return 2 * R * Math.asin(Math.sqrt(a));
     };
 
-    const watchId = navigator.geolocation.watchPosition(
+    void watchAppPosition(
       (position) => {
         const now = Date.now();
         const moved = distanceMeters(
           lastLat,
           lastLng,
-          position.coords.latitude,
-          position.coords.longitude
+          position.latitude,
+          position.longitude
         );
 
         if (now - lastSent < 15000 && moved < 20) return;
 
         lastSent = now;
-        lastLat = position.coords.latitude;
-        lastLng = position.coords.longitude;
+        lastLat = position.latitude;
+        lastLng = position.longitude;
 
         void setRiderAvailability({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          accuracy: position.coords.accuracy,
+          lat: position.latitude,
+          lng: position.longitude,
+          accuracy: position.accuracy,
           isAvailable: true,
         }).catch(() => {});
       },
-      () => {},
-      { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
-    );
+      () => {}
+    ).then((cleanup) => {
+      if (stopped) cleanup();
+      else stopWatch = cleanup;
+    }).catch(() => {});
 
-    return () => navigator.geolocation.clearWatch(watchId);
+    return () => {
+      stopped = true;
+      stopWatch?.();
+    };
   }, [state?.location?.is_available]);
 
   async function goOnline() {
-    if (!navigator.geolocation) {
-      setError("الموقع الجغرافي غير مدعوم على هذا الجهاز.");
-      return;
-    }
     setBusy(true);
     setError("");
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          await setRiderAvailability({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-            isAvailable: true,
-            accuracy: position.coords.accuracy,
-          });
-          await load();
-        } catch (err) {
-          console.error(err);
-          setError("تعذر حفظ موقعك. تأكد من إعداد جدول المواقع ومنح إذن الموقع.");
-        } finally {
-          setBusy(false);
-        }
-      },
-      () => {
-        setError("لم يتم منح إذن الموقع. نحتاج موقعك فقط عندما تختار أن تكون متاحاً.");
-        setBusy(false);
-      },
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
-    );
+    try {
+      const position = await getCurrentAppPosition();
+      await setRiderAvailability({
+        lat: position.latitude,
+        lng: position.longitude,
+        isAvailable: true,
+        accuracy: position.accuracy,
+      });
+      await load();
+    } catch (err) {
+      console.error(err);
+      setError("لم يتم منح إذن الموقع أو تعذر تحديده. نحتاج موقعك فقط عندما تختار أن تكون متاحاً.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function goOffline() {
