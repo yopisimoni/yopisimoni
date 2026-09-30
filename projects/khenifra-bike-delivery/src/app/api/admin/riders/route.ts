@@ -47,9 +47,17 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({ riders: data });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Failed to load riders" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Admin riders GET failed:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to load riders",
+        ...(process.env.NODE_ENV !== "production"
+          ? { detail: error?.message || String(error), code: error?.code }
+          : {}),
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -80,8 +88,16 @@ export async function PATCH(request: NextRequest) {
         status: rider.status,
       },
     });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Failed to update rider" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Admin riders PATCH failed:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to update rider",
+        ...(process.env.NODE_ENV !== "production"
+          ? { detail: error?.message || String(error), code: error?.code }
+          : {}),
+      },
+      { status: 500 }
+    );
   }
 }
