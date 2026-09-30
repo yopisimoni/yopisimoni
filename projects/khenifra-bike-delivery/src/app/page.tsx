@@ -202,6 +202,16 @@ export default function Home() {
         <div><span className="eyebrow">{t.forRiders}</span><h2>{t.riderTitle}</h2><p>{t.riderText}</p></div>
         <a className="button primary" href="/rider">{t.join}</a>
       </section>
+          <footer className="siteFooter">
+        <div className="footerBrand"><strong>{t.brand}</strong><span>© 2026</span></div>
+        <nav aria-label="Legal and information">
+          <a href="/about">{lang === "ar" ? "من نحن" : lang === "fr" ? "À propos" : "About"}</a>
+          <a href="/privacy">{lang === "ar" ? "الخصوصية" : lang === "fr" ? "Confidentialité" : "Privacy"}</a>
+          <a href="/terms">{lang === "ar" ? "الشروط" : lang === "fr" ? "Conditions" : "Terms"}</a>
+          <a href="/contact">{lang === "ar" ? "اتصل بنا" : lang === "fr" ? "Contact" : "Contact"}</a>
+          <a href="/delete-data">{lang === "ar" ? "حذف البيانات" : lang === "fr" ? "Supprimer mes données" : "Delete data"}</a>
+        </nav>
+      </footer>
     </main>
   );
 }
