@@ -102,6 +102,8 @@ const tables = [
       ["datetime", { key: "assigned_at", required: false }],
       ["datetime", { key: "picked_up_at", required: false }],
       ["datetime", { key: "delivered_at", required: false }],
+      ["float", { key: "pickup_lat", required: false }],
+      ["float", { key: "pickup_lng", required: false }],
     ],
     indexes: [
       { key: "order_code_unique", type: "unique", columns: ["order_code"], orders: ["ASC"], lengths: [20] },
@@ -109,6 +111,23 @@ const tables = [
       { key: "rider_idx", type: "key", columns: ["rider_id"], orders: ["ASC"], lengths: [36] },
       { key: "status_idx", type: "key", columns: ["status"], orders: ["ASC"] },
       { key: "status_rider_idx", type: "key", columns: ["status", "rider_id"], orders: ["ASC", "ASC"], lengths: [null, 36] },
+    ],
+  },
+  {
+    id: "rider_locations",
+    name: "Rider Locations",
+    rowSecurity: true,
+    permissions: [Permission.create(Role.users())],
+    columns: [
+      ["varchar", { key: "user_id", size: 36, required: true }],
+      ["float", { key: "lat", required: true }],
+      ["float", { key: "lng", required: true }],
+      ["boolean", { key: "is_available", required: true, default: false }],
+      ["datetime", { key: "updated_at", required: true }],
+    ],
+    indexes: [
+      { key: "rider_location_user_unique", type: "unique", columns: ["user_id"], orders: ["ASC"], lengths: [36] },
+      { key: "rider_location_available_idx", type: "key", columns: ["is_available"], orders: ["ASC"] },
     ],
   },
   {
