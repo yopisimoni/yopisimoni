@@ -1,13 +1,13 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Khenifra Delivery",
-  description: "Fast local delivery across Khenifra.",
+  title: "توصيل خنيفرة | Khenifra Delivery",
+  description: "خدمة توصيل محلية سريعة داخل خنيفرة.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <body>{children}</body>
     </html>
   );
