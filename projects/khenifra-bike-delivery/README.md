@@ -60,7 +60,7 @@ To validate locally, start with transparent zone-based pricing rather than compl
 - OpenStreetMap/MapLibre or Leaflet for maps
 - WhatsApp deep links for support/fallback
 - Cash first; add Moroccan online payment only after validating demand
-- Arabic / French / English
+- Arabic-first interface (default) with full RTL support\n- French as secondary language\n- English as tertiary language\n- All customer, rider, merchant and admin screens must use shared translation keys; no hard-coded single-language UI
 
 ## Core entities
 
