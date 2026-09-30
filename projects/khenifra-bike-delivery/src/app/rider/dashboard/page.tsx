@@ -70,6 +70,54 @@ export default function RiderDashboard() {
 
   useEffect(() => { void load(); }, []);
 
+  useEffect(() => {
+    if (!state?.location?.is_available || !navigator.geolocation) return;
+
+    let lastSent = 0;
+    let lastLat = Number(state.location.lat);
+    let lastLng = Number(state.location.lng);
+
+    const distanceMeters = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+      const toRad = (value: number) => (value * Math.PI) / 180;
+      const R = 6371000;
+      const dLat = toRad(lat2 - lat1);
+      const dLng = toRad(lng2 - lng1);
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    };
+
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const now = Date.now();
+        const moved = distanceMeters(
+          lastLat,
+          lastLng,
+          position.coords.latitude,
+          position.coords.longitude
+        );
+
+        if (now - lastSent < 15000 && moved < 20) return;
+
+        lastSent = now;
+        lastLat = position.coords.latitude;
+        lastLng = position.coords.longitude;
+
+        void setRiderAvailability({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          isAvailable: true,
+        }).catch(() => {});
+      },
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, [state?.location?.is_available]);
+
   async function goOnline() {
     if (!navigator.geolocation) {
       setError("الموقع الجغرافي غير مدعوم على هذا الجهاز.");
@@ -84,6 +132,7 @@ export default function RiderDashboard() {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             isAvailable: true,
+            accuracy: position.coords.accuracy,
           });
           await load();
         } catch (err) {
@@ -109,6 +158,7 @@ export default function RiderDashboard() {
         lat: state.location.lat,
         lng: state.location.lng,
         isAvailable: false,
+        accuracy: state.location.accuracy,
       });
       await load();
     } catch {
