@@ -122,6 +122,7 @@ const tables = [
       ["varchar", { key: "user_id", size: 36, required: true }],
       ["float", { key: "lat", required: true }],
       ["float", { key: "lng", required: true }],
+      ["float", { key: "accuracy", required: false }],
       ["boolean", { key: "is_available", required: true, default: false }],
       ["datetime", { key: "updated_at", required: true }],
     ],
@@ -252,4 +253,4 @@ for (const table of tables) {
 }
 
 console.log("\nKhenifra Delivery Appwrite schema setup complete.");
-console.log("Next: connect authentication and assign per-row customer/rider permissions when rows are created.");
+console.log("Next: verify location freshness, customer tracking, and feedback flows end-to-end.");
