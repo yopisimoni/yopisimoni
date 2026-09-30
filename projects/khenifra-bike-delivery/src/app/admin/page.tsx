@@ -119,6 +119,7 @@ export default function AdminRidersPage() {
           <p>{pending.length} طلب بانتظار المراجعة · {riders.length} إجمالي السائقين</p>
         </div>
         <div className="adminHeaderActions">
+          <Link className="adminLinkButton" href="/admin/deliveries">لوحة التوصيلات</Link>
           <button onClick={() => void load()}>تحديث</button>
           <button
             className="secondaryAdminButton"
