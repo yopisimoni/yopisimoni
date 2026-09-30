@@ -35,6 +35,7 @@ export async function applyAsRider(input: RiderApplicationInput) {
   ];
 
   let profile;
+
   try {
     profile = await tablesDB.createRow({
       databaseId,
@@ -51,20 +52,61 @@ export async function applyAsRider(input: RiderApplicationInput) {
     });
   } catch (error: any) {
     if (error?.code !== 409) throw error;
+
+    const existingProfiles = await tablesDB.listRows({
+      databaseId,
+      tableId: profilesTableId,
+    });
+
+    const existingProfile: any = existingProfiles.rows.find(
+      (row: any) => row.user_id === user.$id
+    );
+
+    if (existingProfile) {
+      profile = await tablesDB.updateRow({
+        databaseId,
+        tableId: profilesTableId,
+        rowId: existingProfile.$id,
+        data: {
+          full_name: input.fullName,
+          phone: input.phone,
+          preferred_language: input.preferredLanguage,
+          role: "rider",
+        },
+      });
+    }
   }
 
-  const rider = await tablesDB.createRow({
-    databaseId,
-    tableId: ridersTableId,
-    rowId: ID.unique(),
-    data: {
-      user_id: user.$id,
-      status: "pending",
-      is_online: false,
-      vehicle_type: input.vehicleType,
-    },
-    permissions: riderPermissions,
-  });
+  let rider;
+
+  try {
+    rider = await tablesDB.createRow({
+      databaseId,
+      tableId: ridersTableId,
+      rowId: ID.unique(),
+      data: {
+        user_id: user.$id,
+        status: "pending",
+        is_online: false,
+        vehicle_type: input.vehicleType,
+      },
+      permissions: riderPermissions,
+    });
+  } catch (error: any) {
+    if (error?.code !== 409) throw error;
+
+    const existingRiders = await tablesDB.listRows({
+      databaseId,
+      tableId: ridersTableId,
+    });
+
+    const existingRider: any = existingRiders.rows.find(
+      (row: any) => row.user_id === user.$id
+    );
+
+    if (!existingRider) throw error;
+    rider = existingRider;
+  }
 
   return { userId: user.$id, riderId: rider.$id, profile };
 }
