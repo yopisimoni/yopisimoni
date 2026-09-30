@@ -1,6 +1,7 @@
 import { ID, Permission, Role } from "node-appwrite";
 import { NextRequest, NextResponse } from "next/server";
 import { adminDatabaseId, adminTablesDB } from "@/lib/appwrite/admin-server";
+import { getAuthorizedAdmin } from "@/lib/appwrite/admin-auth-server";
 
 const deliveriesTableId =
   process.env.NEXT_PUBLIC_APPWRITE_DELIVERIES_TABLE_ID || "deliveries";
@@ -22,12 +23,6 @@ const statuses = [
   "cancelled",
   "failed",
 ] as const;
-
-function authorized(request: NextRequest) {
-  const configured = process.env.ADMIN_PASSCODE;
-  const supplied = request.headers.get("x-admin-passcode");
-  return Boolean(configured && supplied && configured === supplied);
-}
 
 function participantPermissions(customerId: string, riderId?: string | null) {
   const permissions = [Permission.read(Role.user(customerId))];
@@ -68,7 +63,8 @@ async function createEvent({
 }
 
 export async function GET(request: NextRequest) {
-  if (!authorized(request)) {
+  const admin = await getAuthorizedAdmin(request);
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -154,7 +150,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  if (!authorized(request)) {
+  const admin = await getAuthorizedAdmin(request);
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
