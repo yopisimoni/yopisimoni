@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
-import { Bike, CheckCircle2, Clock3, LayoutDashboard, LogOut, Phone, RefreshCw, ShieldCheck, UserRoundCheck, UserRoundX } from "lucide-react";
+import { BarChart3, Bike, CheckCircle2, Clock3, LayoutDashboard, LogOut, Phone, RefreshCw, ShieldCheck, UserRoundCheck, UserRoundX } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 
 type Rider={id:string;userId:string;status:"pending"|"approved"|"suspended";isOnline:boolean;vehicleType:"bike"|"motorbike";createdAt:string;fullName:string;phone:string;preferredLanguage:string};
@@ -18,7 +18,7 @@ export default function AdminRidersPage(){
   if(!ready)return <main dir="rtl" className="adminPage"><div className="adminLogin elevatedCard"><div className="adminLoginIcon"><ShieldCheck size={30}/></div><BrandMark/><h1>لوحة إدارة السائقين</h1><p>أدخل رمز الإدارة لعرض طلبات الانضمام.</p><form onSubmit={login}><label>رمز الإدارة</label><input type="password" value={passcode} onChange={e=>setPasscode(e.target.value)} required autoComplete="current-password"/><button type="submit" disabled={loading}>{loading?"جارٍ التحقق...":"دخول"}</button></form>{error?<p className="formError">{error}</p>:null}<Link href="/" className="textLink">العودة للرئيسية</Link></div></main>;
 
   return <main dir="rtl" className="adminPage">
-    <div className="adminHeader"><div><span className="status">Khenifra Delivery Admin</span><h1>طلبات السائقين</h1><p>مراجعة السائقين واعتمادهم قبل بدء التوصيل.</p></div><div className="adminHeaderActions"><Link className="adminLinkButton iconButton" href="/admin/deliveries"><LayoutDashboard size={17}/>لوحة التوصيلات</Link><button className="iconButton" onClick={()=>void load()}><RefreshCw size={16}/>تحديث</button><button className="secondaryAdminButton iconButton" onClick={()=>{sessionStorage.removeItem("kbd-admin-passcode");setPasscode("");setReady(false);setRiders([])}}><LogOut size={16}/>خروج</button></div></div>
+    <div className="adminHeader"><div><span className="status">Khenifra Delivery Admin</span><h1>طلبات السائقين</h1><p>مراجعة السائقين واعتمادهم قبل بدء التوصيل.</p></div><div className="adminHeaderActions"><Link className="adminLinkButton iconButton" href="/admin/analytics"><BarChart3 size={17}/>التحليلات</Link><Link className="adminLinkButton iconButton" href="/admin/deliveries"><LayoutDashboard size={17}/>لوحة التوصيلات</Link><button className="iconButton" onClick={()=>void load()}><RefreshCw size={16}/>تحديث</button><button className="secondaryAdminButton iconButton" onClick={()=>{sessionStorage.removeItem("kbd-admin-passcode");setPasscode("");setReady(false);setRiders([])}}><LogOut size={16}/>خروج</button></div></div>
 
     <div className="kpiGrid">
       <div className="kpiCard"><span className="kpiIcon amber"><Clock3/></span><div><small>بانتظار المراجعة</small><strong>{pending.length}</strong></div></div>
