@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDatabaseId, adminTablesDB } from "@/lib/appwrite/admin-server";
+import { getAuthorizedAdmin } from "@/lib/appwrite/admin-auth-server";
 
 const deliveriesTableId =
   process.env.NEXT_PUBLIC_APPWRITE_DELIVERIES_TABLE_ID || "deliveries";
@@ -9,12 +10,6 @@ const profilesTableId =
   process.env.NEXT_PUBLIC_APPWRITE_PROFILES_TABLE_ID || "profiles";
 const feedbackTableId = "delivery_feedback";
 
-function authorized(request: NextRequest) {
-  const configured = process.env.ADMIN_PASSCODE;
-  const supplied = request.headers.get("x-admin-passcode");
-  return Boolean(configured && supplied && configured === supplied);
-}
-
 function minutesBetween(start?: string | null, end?: string | null) {
   if (!start || !end) return null;
   const value = (new Date(end).getTime() - new Date(start).getTime()) / 60000;
@@ -22,7 +17,8 @@ function minutesBetween(start?: string | null, end?: string | null) {
 }
 
 export async function GET(request: NextRequest) {
-  if (!authorized(request)) {
+  const admin = await getAuthorizedAdmin(request);
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
