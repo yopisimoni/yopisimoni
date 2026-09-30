@@ -58,8 +58,6 @@ export async function createDelivery(
     },
     permissions: [
       Permission.read(Role.user(customer.$id)),
-      Permission.update(Role.user(customer.$id)),
-      Permission.delete(Role.user(customer.$id)),
     ],
   });
 
