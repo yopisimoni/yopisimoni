@@ -10,12 +10,17 @@ const deliveriesTableId =
 
 export type PreferredLanguage = "ar" | "fr" | "en";
 
-export async function getCurrentUser() {
+async function getSessionUser() {
   try {
     return await account.get();
   } catch {
     return null;
   }
+}
+
+export async function getCurrentUser() {
+  const user = await getSessionUser();
+  return user?.email ? user : null;
 }
 
 export async function signUp({
@@ -31,7 +36,7 @@ export async function signUp({
   password: string;
   preferredLanguage: PreferredLanguage;
 }) {
-  const existing = await getCurrentUser();
+  const existing = await getSessionUser();
 
   if (existing) {
     try {
@@ -71,7 +76,7 @@ export async function signUp({
 }
 
 export async function signIn(email: string, password: string) {
-  const existing = await getCurrentUser();
+  const existing = await getSessionUser();
   if (existing) {
     try {
       await account.deleteSession({ sessionId: "current" });
@@ -115,6 +120,9 @@ export async function resetPassword({
 
 export async function getMyAccountData() {
   const user = await account.get();
+  if (!user.email) {
+    throw new Error("Authenticated account required");
+  }
 
   const [profiles, deliveries] = await Promise.all([
     tablesDB.listRows({
