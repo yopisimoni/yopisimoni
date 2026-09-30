@@ -31,6 +31,7 @@ export type DeliveryRecord = CreateDeliveryInput & {
   quotedPriceMad?: number;
   finalPriceMad?: number;
   requestedAt: string;
+  deliveryPin?: string;
 };
 
 export interface DeliveryBackend {
