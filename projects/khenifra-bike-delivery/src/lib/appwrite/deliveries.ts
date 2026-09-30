@@ -63,12 +63,32 @@ export async function createDelivery(
     ],
   });
 
+  let deliveryPinValue: string | undefined;
+  try {
+    const jwt = await account.createJWT();
+    const response = await fetch("/api/customer/delivery-pin", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-appwrite-jwt": jwt.jwt,
+      },
+      body: JSON.stringify({ deliveryId: row.$id }),
+    });
+    if (response.ok) {
+      const json = await response.json();
+      deliveryPinValue = json.pin;
+    }
+  } catch (error) {
+    console.error("Could not generate delivery PIN", error);
+  }
+
   return {
     id: row.$id,
     orderCode,
     status: "requested",
     customerId: customer.$id,
     requestedAt,
+    deliveryPin: deliveryPinValue,
     ...input,
   };
 }
