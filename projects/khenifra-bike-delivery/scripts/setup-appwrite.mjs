@@ -131,6 +131,26 @@ const tables = [
     ],
   },
   {
+    id: "delivery_feedback",
+    name: "Delivery Feedback",
+    rowSecurity: true,
+    permissions: [],
+    columns: [
+      ["varchar", { key: "delivery_id", size: 36, required: true }],
+      ["varchar", { key: "customer_id", size: 36, required: true }],
+      ["varchar", { key: "rider_id", size: 36, required: true }],
+      ["integer", { key: "rating", required: true, min: 1, max: 5 }],
+      ["boolean", { key: "favorite", required: true, default: false }],
+      ["text", { key: "comment", required: false }],
+      ["datetime", { key: "created_at", required: true }],
+    ],
+    indexes: [
+      { key: "feedback_delivery_unique", type: "unique", columns: ["delivery_id"], orders: ["ASC"], lengths: [36] },
+      { key: "feedback_rider_idx", type: "key", columns: ["rider_id"], orders: ["ASC"], lengths: [36] },
+      { key: "feedback_customer_idx", type: "key", columns: ["customer_id"], orders: ["ASC"], lengths: [36] },
+    ],
+  },
+  {
     id: "delivery_events",
     name: "Delivery Events",
     rowSecurity: true,
@@ -188,6 +208,8 @@ async function createColumn(tableId, [kind, config]) {
       return db.createBooleanColumn(common);
     case "float":
       return db.createFloatColumn(common);
+    case "integer":
+      return db.createIntegerColumn(common);
     case "datetime":
       return db.createDatetimeColumn(common);
     default:
