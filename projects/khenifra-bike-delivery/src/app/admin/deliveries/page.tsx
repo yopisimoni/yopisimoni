@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BarChart3, Bike, CheckCircle2, CircleDollarSign, Clock3, LayoutDashboard, MapPin, Navigation, Package, Phone, RefreshCw, Route, Truck, XCircle } from "lucide-react";
+import { adminFetch } from "@/lib/appwrite/admin-client";
 
 type DeliveryStatus =
   | "requested"
@@ -61,7 +62,6 @@ const categoryLabel: Record<string, string> = {
 };
 
 export default function AdminDispatchPage() {
-  const [passcode, setPasscode] = useState("");
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [riders, setRiders] = useState<Rider[]>([]);
   const [ready, setReady] = useState(false);
@@ -70,31 +70,22 @@ export default function AdminDispatchPage() {
   const [filter, setFilter] = useState<"active" | "all" | "completed">("active");
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("kbd-admin-passcode") || "";
-    if (saved) {
-      setPasscode(saved);
-      void load(saved);
-    }
+    void load();
   }, []);
 
-  async function load(code = passcode) {
+  async function load() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/admin/deliveries", {
-        headers: { "x-admin-passcode": code },
-        cache: "no-store",
-      });
-
+      const response = await adminFetch("/api/admin/deliveries", { cache: "no-store" });
       const json = await response.json();
-      if (!response.ok) {
-        if (response.status === 401) throw new Error("رمز الإدارة غير صحيح");
-        throw new Error(json.detail || "تعذر تحميل لوحة التوصيلات");
+      if (response.status === 401) {
+        window.location.href = "/admin/login";
+        return;
       }
-
+      if (!response.ok) throw new Error(json.detail || "تعذر تحميل لوحة التوصيلات");
       setDeliveries(json.deliveries || []);
       setRiders(json.riders || []);
-      sessionStorage.setItem("kbd-admin-passcode", code);
       setReady(true);
     } catch (err) {
       setReady(false);
@@ -104,18 +95,9 @@ export default function AdminDispatchPage() {
     }
   }
 
-  async function login(event: FormEvent) {
-    event.preventDefault();
-    await load(passcode);
-  }
-
   async function patch(body: Record<string, unknown>) {
-    const response = await fetch("/api/admin/deliveries", {
+    const response = await adminFetch("/api/admin/deliveries", {
       method: "PATCH",
-      headers: {
-        "content-type": "application/json",
-        "x-admin-passcode": passcode,
-      },
       body: JSON.stringify(body),
     });
     const json = await response.json();
@@ -200,6 +182,13 @@ export default function AdminDispatchPage() {
 
   if (!ready) {
     return (
+      <main dir="rtl" className="adminPage">
+        <div className="loadingCard"><LayoutDashboard/><span>{loading ? "جارٍ تحميل لوحة التوصيلات..." : error || "يجب تسجيل دخول الإدارة."}</span></div>
+      </main>
+    );
+  }
+
+  return (
       <main dir="rtl" className="adminPage">
         <div className="adminLogin">
           <span className="status">Khenifra Delivery Admin</span>
