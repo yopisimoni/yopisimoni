@@ -26,9 +26,12 @@ export type RiderApplicationInput = {
 
 export async function applyAsRider(input: RiderApplicationInput) {
   const user = await getOrCreateUser();
-  const permissions = [
+  const profilePermissions = [
     Permission.read(Role.user(user.$id)),
     Permission.update(Role.user(user.$id)),
+  ];
+  const riderPermissions = [
+    Permission.read(Role.user(user.$id)),
   ];
 
   let profile;
@@ -44,7 +47,7 @@ export async function applyAsRider(input: RiderApplicationInput) {
         preferred_language: input.preferredLanguage,
         role: "rider",
       },
-      permissions,
+      permissions: profilePermissions,
     });
   } catch (error: any) {
     if (error?.code !== 409) throw error;
@@ -60,7 +63,7 @@ export async function applyAsRider(input: RiderApplicationInput) {
       is_online: false,
       vehicle_type: input.vehicleType,
     },
-    permissions,
+    permissions: riderPermissions,
   });
 
   return { userId: user.$id, riderId: rider.$id, profile };
