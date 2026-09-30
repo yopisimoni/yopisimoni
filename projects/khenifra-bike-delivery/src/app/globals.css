@@ -81,3 +81,28 @@
 .infoCard h1{font-size:clamp(38px,7vw,64px);line-height:1.05;margin:18px 0 8px}.infoUpdated{color:#718078;font-size:14px}.infoIntro{font-size:19px;line-height:1.75;color:#445149;margin:26px 0 34px}
 .infoSection{padding:24px 0;border-top:1px solid #edf0ed}.infoSection h2{font-size:23px;margin:0 0 12px}.infoSection p,.infoSection li{line-height:1.8;color:#536059}.infoSection ul{padding-inline-start:22px}.infoActions{margin-top:28px}
 @media(max-width:620px){.siteFooter{align-items:flex-start;flex-direction:column}.infoCard{margin:16px;padding:24px}.infoCard h1{font-size:40px}}
+
+
+.adminLinkButton{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#163d27;border:1px solid #d9ded9;padding:12px 16px;border-radius:11px;font-weight:800}
+.dispatchFilters{display:flex;gap:8px;margin:0 0 24px;flex-wrap:wrap}
+.dispatchFilters button{border:1px solid #d8ded9;background:#fff;color:#48544d;padding:10px 16px;border-radius:999px;font-weight:800;cursor:pointer}
+.dispatchFilters button.active{background:#163d27;color:#fff;border-color:#163d27}
+.dispatchList{display:grid;gap:16px}
+.deliveryAdminCard{background:#fff;border:1px solid #e0e4e0;border-radius:22px;padding:22px}
+.deliveryAdminHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.deliveryAdminHead>div{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.deliveryCode{font-size:21px;letter-spacing:.04em}
+.deliveryStatus{font-size:11px;font-weight:900;padding:6px 9px;border-radius:999px;background:#eef1ee;color:#455149}
+.deliveryStatus-requested{background:#fff1c9;color:#7f5a00}
+.deliveryStatus-assigned,.deliveryStatus-rider_to_pickup,.deliveryStatus-picked_up,.deliveryStatus-rider_to_dropoff{background:#dfeaf7;color:#26547b}
+.deliveryStatus-delivered{background:#e5f2e8;color:#28693f}
+.deliveryStatus-cancelled,.deliveryStatus-failed{background:#f6dddd;color:#7e2c2c}
+.deliveryRoute{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;background:#f7f8f5;border-radius:16px;padding:18px;margin:18px 0}
+.deliveryRoute>div:not(.routeArrow){display:flex;flex-direction:column;gap:5px}
+.deliveryRoute small{color:#768179}.deliveryRoute a{color:#28693f;text-decoration:underline}.routeArrow{font-size:22px;color:#768179}
+.deliveryNotes{border-inline-start:3px solid #b7c9b9;padding-inline-start:12px;color:#59655e}
+.dispatchControls{display:grid;grid-template-columns:1.2fr 1fr .8fr;gap:12px;margin-top:18px}
+.dispatchControls label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800;color:#536059}
+.dispatchControls select,.dispatchControls input{width:100%;padding:12px;border:1px solid #d9ded9;border-radius:11px;background:#fff;font:inherit}
+.deliveryMeta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;font-size:12px;color:#7a847e}
+@media(max-width:800px){.dispatchControls{grid-template-columns:1fr}.deliveryRoute{grid-template-columns:1fr}.routeArrow{transform:rotate(-90deg);text-align:center}}
