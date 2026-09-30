@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { Bike, CheckCircle2, CircleDollarSign, Clock3, LayoutDashboard, MapPin, Navigation, Package, Phone, RefreshCw, Route, Truck, XCircle } from "lucide-react";
+import { BarChart3, Bike, CheckCircle2, CircleDollarSign, Clock3, LayoutDashboard, MapPin, Navigation, Package, Phone, RefreshCw, Route, Truck, XCircle } from "lucide-react";
 
 type DeliveryStatus =
   | "requested"
@@ -235,6 +235,7 @@ export default function AdminDispatchPage() {
           </p>
         </div>
         <div className="adminHeaderActions">
+          <Link className="adminLinkButton iconButton" href="/admin/analytics"><BarChart3 size={17}/>التحليلات</Link>
           <Link className="adminLinkButton iconButton" href="/admin"><Bike size={17}/>السائقون</Link>
           <button className="iconButton" onClick={() => void load()}><RefreshCw size={16}/>تحديث</button>
         </div>
