@@ -52,10 +52,12 @@ export async function setRiderAvailability({
   lat,
   lng,
   isAvailable,
+  accuracy,
 }: {
   lat: number;
   lng: number;
   isAvailable: boolean;
+  accuracy?: number;
 }) {
   const user = await currentUser();
   const permissions = [
@@ -73,6 +75,7 @@ export async function setRiderAvailability({
     user_id: user.$id,
     lat,
     lng,
+    ...(typeof accuracy === "number" ? { accuracy } : {}),
     is_available: isAvailable,
     updated_at: new Date().toISOString(),
   };
