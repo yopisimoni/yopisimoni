@@ -25,7 +25,7 @@ const content = {
         "قد نشارك المعلومات اللازمة فقط مع السائق المعيّن لإتمام عملية الاستلام والتسليم، مثل العنوان ورقم التواصل المرتبط بالطلب."
       ]},
       { title: "الموقع الجغرافي", paragraphs: [
-        "النسخة الحالية لا تجمع موقعاً جغرافياً دقيقاً في الخلفية. إذا أضفنا لاحقاً ميزة تتبع موقع السائق أثناء توصيل نشط، سنعرض إفصاحاً واضحاً ونطلب الإذن المناسب قبل جمعه."
+        "يمكن للعميل اختيار مشاركة موقع الاستلام الدقيق لتسهيل إنشاء الطلب. ويمكن للسائق مشاركة موقعه الدقيق عندما يختار أن يكون متاحاً، ويتم تحديث آخر موقع أثناء فتح لوحة السائق وتنفيذ توصيل نشط لتسهيل التعيين والتتبع. لا تجمع النسخة الحالية موقع السائق بشكل مستمر في الخلفية بعد إغلاق التطبيق أو عند إيقاف التوفر."
       ]},
       { title: "الاحتفاظ والحذف", paragraphs: [
         "نحتفظ بالبيانات فقط للمدة اللازمة لتشغيل الخدمة والوفاء بالالتزامات القانونية أو التشغيلية. يمكنك طلب حذف بياناتك من صفحة حذف البيانات أو عبر صفحة الاتصال."
@@ -71,7 +71,7 @@ const content = {
         "Les informations strictement nécessaires peuvent être partagées avec le livreur affecté afin d'effectuer la collecte et la livraison."
       ]},
       { title: "Localisation", paragraphs: [
-        "La version actuelle ne collecte pas de localisation précise en arrière-plan. Si le suivi du livreur est ajouté ultérieurement pendant une livraison active, une information claire et l'autorisation appropriée seront demandées."
+        "Le client peut choisir de partager sa position précise de collecte. Le livreur peut partager sa position précise lorsqu'il se rend disponible, et sa dernière position peut être actualisée pendant que le tableau du livreur est ouvert et qu'une livraison est active afin de faciliter l'affectation et le suivi. La version actuelle ne collecte pas en continu la position du livreur en arrière-plan après la fermeture de l'application ou lorsqu'il n'est plus disponible."
       ]},
       { title: "Conservation et suppression", paragraphs: [
         "Les données sont conservées uniquement pendant la durée nécessaire au fonctionnement du service et aux obligations applicables. Vous pouvez demander leur suppression via la page Suppression des données ou la page Contact."
@@ -117,7 +117,7 @@ const content = {
         "Only information necessary to complete a delivery may be shared with the assigned rider, such as relevant addresses and contact numbers."
       ]},
       { title: "Location data", paragraphs: [
-        "The current version does not collect precise background location. If active-delivery rider tracking is added later, we will provide a clear disclosure and request the appropriate permission before collecting it."
+        "Customers may choose to share a precise pickup location. Riders may share precise location when they choose to be available, and their last known location may be refreshed while the rider dashboard is open and a delivery is active to support assignment and customer tracking. The current version does not continuously collect rider location in the background after the app is closed or when the rider is offline."
       ]},
       { title: "Retention and deletion", paragraphs: [
         "We keep information only for as long as needed to operate the service and meet applicable legal or operational requirements. You can request deletion through the Data Deletion page or Contact page."
