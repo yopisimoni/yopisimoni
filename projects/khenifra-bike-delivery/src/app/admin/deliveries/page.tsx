@@ -2,7 +2,21 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { BarChart3, Bike, CheckCircle2, CircleDollarSign, Clock3, LayoutDashboard, MapPin, Navigation, Package, Phone, RefreshCw, Route, Truck, XCircle } from "lucide-react";
+import {
+  BarChart3,
+  Bike,
+  CircleDollarSign,
+  Clock3,
+  LayoutDashboard,
+  MapPin,
+  Navigation,
+  Package,
+  Phone,
+  RefreshCw,
+  Route,
+  Truck,
+  XCircle,
+} from "lucide-react";
 import { adminFetch } from "@/lib/appwrite/admin-client";
 
 type DeliveryStatus =
@@ -65,25 +79,29 @@ export default function AdminDispatchPage() {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [riders, setRiders] = useState<Rider[]>([]);
   const [ready, setReady] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<"active" | "all" | "completed">("active");
-
-  useEffect(() => {
-    void load();
-  }, []);
 
   async function load() {
     setLoading(true);
     setError("");
+
     try {
-      const response = await adminFetch("/api/admin/deliveries", { cache: "no-store" });
+      const response = await adminFetch("/api/admin/deliveries", {
+        cache: "no-store",
+      });
       const json = await response.json();
+
       if (response.status === 401) {
         window.location.href = "/admin/login";
         return;
       }
-      if (!response.ok) throw new Error(json.detail || "تعذر تحميل لوحة التوصيلات");
+
+      if (!response.ok) {
+        throw new Error(json.detail || json.error || "تعذر تحميل لوحة التوصيلات");
+      }
+
       setDeliveries(json.deliveries || []);
       setRiders(json.riders || []);
       setReady(true);
@@ -95,15 +113,27 @@ export default function AdminDispatchPage() {
     }
   }
 
+  useEffect(() => {
+    void load();
+  }, []);
+
   async function patch(body: Record<string, unknown>) {
     const response = await adminFetch("/api/admin/deliveries", {
       method: "PATCH",
       body: JSON.stringify(body),
     });
+
     const json = await response.json();
+
+    if (response.status === 401) {
+      window.location.href = "/admin/login";
+      throw new Error("Unauthorized");
+    }
+
     if (!response.ok) {
       throw new Error(json.detail || json.error || "تعذر تحديث الطلب");
     }
+
     return json;
   }
 
@@ -113,17 +143,20 @@ export default function AdminDispatchPage() {
       await patch({ action: "assign_nearest", deliveryId });
       await load();
     } catch (err) {
+      if (err instanceof Error && err.message === "Unauthorized") return;
       setError(err instanceof Error ? err.message : "تعذر العثور على سائق قريب");
     }
   }
 
   async function assign(deliveryId: string, riderUserId: string) {
     if (!riderUserId) return;
+
     setError("");
     try {
       await patch({ action: "assign", deliveryId, riderUserId });
       await load();
     } catch (err) {
+      if (err instanceof Error && err.message === "Unauthorized") return;
       setError(err instanceof Error ? err.message : "تعذر تعيين السائق");
     }
   }
@@ -138,12 +171,14 @@ export default function AdminDispatchPage() {
         )
       );
     } catch (err) {
+      if (err instanceof Error && err.message === "Unauthorized") return;
       setError(err instanceof Error ? err.message : "تعذر تحديث الحالة");
     }
   }
 
   async function savePrice(deliveryId: string, value: string) {
     if (!value) return;
+
     setError("");
     try {
       const json = await patch({
@@ -151,6 +186,7 @@ export default function AdminDispatchPage() {
         deliveryId,
         quotedPriceMad: Number(value),
       });
+
       setDeliveries((current) =>
         current.map((delivery) =>
           delivery.id === deliveryId
@@ -159,17 +195,20 @@ export default function AdminDispatchPage() {
         )
       );
     } catch (err) {
+      if (err instanceof Error && err.message === "Unauthorized") return;
       setError(err instanceof Error ? err.message : "تعذر حفظ السعر");
     }
   }
 
   const visibleDeliveries = useMemo(() => {
     if (filter === "all") return deliveries;
+
     if (filter === "completed") {
       return deliveries.filter((delivery) =>
         ["delivered", "cancelled", "failed"].includes(delivery.status)
       );
     }
+
     return deliveries.filter(
       (delivery) =>
         !["delivered", "cancelled", "failed"].includes(delivery.status)
@@ -177,13 +216,21 @@ export default function AdminDispatchPage() {
   }, [deliveries, filter]);
 
   const activeCount = deliveries.filter(
-    (delivery) => !["delivered", "cancelled", "failed"].includes(delivery.status)
+    (delivery) =>
+      !["delivered", "cancelled", "failed"].includes(delivery.status)
   ).length;
 
   if (!ready) {
     return (
       <main dir="rtl" className="adminPage">
-        <div className="loadingCard"><LayoutDashboard/><span>{loading ? "جارٍ تحميل لوحة التوصيلات..." : error || "يجب تسجيل دخول الإدارة."}</span></div>
+        <div className="loadingCard">
+          <LayoutDashboard />
+          <span>
+            {loading
+              ? "جارٍ تحميل لوحة التوصيلات..."
+              : error || "يجب تسجيل دخول الإدارة."}
+          </span>
+        </div>
       </main>
     );
   }
@@ -195,27 +242,56 @@ export default function AdminDispatchPage() {
           <span className="status">Khenifra Delivery Dispatch</span>
           <h1>لوحة التوصيلات</h1>
           <p>
-            {activeCount} طلب نشط · {riders.length} سائق معتمد · {deliveries.length} طلب إجمالي
+            {activeCount} طلب نشط · {riders.length} سائق معتمد ·{" "}
+            {deliveries.length} طلب إجمالي
           </p>
         </div>
+
         <div className="adminHeaderActions">
-          <Link className="adminLinkButton iconButton" href="/admin/analytics"><BarChart3 size={17}/>التحليلات</Link>
-          <Link className="adminLinkButton iconButton" href="/admin"><Bike size={17}/>السائقون</Link>
-          <button className="iconButton" onClick={() => void load()}><RefreshCw size={16}/>تحديث</button>
+          <Link className="adminLinkButton iconButton" href="/admin/analytics">
+            <BarChart3 size={17} />
+            التحليلات
+          </Link>
+          <Link className="adminLinkButton iconButton" href="/admin">
+            <Bike size={17} />
+            السائقون
+          </Link>
+          <button className="iconButton" onClick={() => void load()}>
+            <RefreshCw size={16} />
+            تحديث
+          </button>
         </div>
       </div>
 
       <div className="kpiGrid dispatchKpis">
-        <div className="kpiCard"><span className="kpiIcon amber"><Clock3/></span><div><small>طلبات نشطة</small><strong>{activeCount}</strong></div></div>
-        <div className="kpiCard"><span className="kpiIcon green"><Bike/></span><div><small>سائقون معتمدون</small><strong>{riders.length}</strong></div></div>
-        <div className="kpiCard"><span className="kpiIcon blue"><Package/></span><div><small>كل الطلبات</small><strong>{deliveries.length}</strong></div></div>
-        <div className="kpiCard"><span className="kpiIcon red"><XCircle/></span><div><small>مغلقة / فاشلة</small><strong>{deliveries.length-activeCount}</strong></div></div>
+        <div className="kpiCard">
+          <span className="kpiIcon amber"><Clock3 /></span>
+          <div><small>طلبات نشطة</small><strong>{activeCount}</strong></div>
+        </div>
+        <div className="kpiCard">
+          <span className="kpiIcon green"><Bike /></span>
+          <div><small>سائقون معتمدون</small><strong>{riders.length}</strong></div>
+        </div>
+        <div className="kpiCard">
+          <span className="kpiIcon blue"><Package /></span>
+          <div><small>كل الطلبات</small><strong>{deliveries.length}</strong></div>
+        </div>
+        <div className="kpiCard">
+          <span className="kpiIcon red"><XCircle /></span>
+          <div><small>مغلقة / فاشلة</small><strong>{deliveries.length - activeCount}</strong></div>
+        </div>
       </div>
 
       <div className="dispatchFilters">
-        <button className={filter === "active" ? "active" : ""} onClick={() => setFilter("active")}>النشطة</button>
-        <button className={filter === "completed" ? "active" : ""} onClick={() => setFilter("completed")}>المكتملة</button>
-        <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>الكل</button>
+        <button className={filter === "active" ? "active" : ""} onClick={() => setFilter("active")}>
+          النشطة
+        </button>
+        <button className={filter === "completed" ? "active" : ""} onClick={() => setFilter("completed")}>
+          المكتملة
+        </button>
+        <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>
+          الكل
+        </button>
       </div>
 
       {error ? <p className="formError">{error}</p> : null}
@@ -233,54 +309,87 @@ export default function AdminDispatchPage() {
                     {statusLabel[delivery.status]}
                   </span>
                 </div>
-                <span className="categoryChip"><Package size={14}/>{categoryLabel[delivery.category] || delivery.category}</span>
+                <span className="categoryChip">
+                  <Package size={14} />
+                  {categoryLabel[delivery.category] || delivery.category}
+                </span>
               </div>
 
               <div className="deliveryRoute">
                 <div>
-                  <small><MapPin size={14}/>الاستلام</small>
+                  <small><MapPin size={14} />الاستلام</small>
                   <strong>{delivery.pickupAddress}</strong>
-                  <a href={"tel:" + delivery.senderPhone}><Phone size={14}/>{delivery.senderPhone}</a>
+                  <a href={"tel:" + delivery.senderPhone}>
+                    <Phone size={14} />
+                    {delivery.senderPhone}
+                  </a>
                 </div>
-                <div className="routeArrow"><Route size={22}/></div>
+
+                <div className="routeArrow"><Route size={22} /></div>
+
                 <div>
-                  <small><Navigation size={14}/>التسليم</small>
+                  <small><Navigation size={14} />التسليم</small>
                   <strong>{delivery.dropoffAddress}</strong>
-                  <a href={"tel:" + delivery.recipientPhone}><Phone size={14}/>{delivery.recipientPhone}</a>
+                  <a href={"tel:" + delivery.recipientPhone}>
+                    <Phone size={14} />
+                    {delivery.recipientPhone}
+                  </a>
                 </div>
               </div>
 
-              {delivery.notes ? <p className="deliveryNotes">{delivery.notes}</p> : null}
+              {delivery.notes ? (
+                <p className="deliveryNotes">{delivery.notes}</p>
+              ) : null}
 
               <div className="nearestAssignRow">
-                <button className="nearestAssignButton" disabled={delivery.pickupLat == null || delivery.pickupLng == null} onClick={() => void assignNearest(delivery.id)}>
-                  <Navigation size={17}/> تعيين أقرب سائق متاح
+                <button
+                  className="nearestAssignButton"
+                  disabled={
+                    delivery.pickupLat == null || delivery.pickupLng == null
+                  }
+                  onClick={() => void assignNearest(delivery.id)}
+                >
+                  <Navigation size={17} />
+                  تعيين أقرب سائق متاح
                 </button>
-                {delivery.pickupLat == null ? <small>أضف موقع الاستلام من واجهة العميل لتفعيل الاختيار التلقائي.</small> : <small>سيتم اختيار أقرب سائق معتمد وحالته متاح.</small>}
+
+                {delivery.pickupLat == null ? (
+                  <small>أضف موقع الاستلام من واجهة العميل لتفعيل الاختيار التلقائي.</small>
+                ) : (
+                  <small>سيتم اختيار أقرب سائق معتمد وحالته متاح.</small>
+                )}
               </div>
 
               <div className="dispatchControls">
                 <label>
-                  <span><Bike size={14}/>السائق</span>
+                  <span><Bike size={14} />السائق</span>
                   <select
                     value={delivery.riderId || ""}
-                    onChange={(event) => void assign(delivery.id, event.target.value)}
+                    onChange={(event) =>
+                      void assign(delivery.id, event.target.value)
+                    }
                   >
                     <option value="">اختر سائقاً معتمداً</option>
                     {riders.map((rider) => (
                       <option value={rider.userId} key={rider.userId}>
-                        {rider.fullName || rider.phone} · {rider.vehicleType === "motorbike" ? "دراجة نارية" : "دراجة هوائية"}
+                        {rider.fullName || rider.phone} ·{" "}
+                        {rider.vehicleType === "motorbike"
+                          ? "دراجة نارية"
+                          : "دراجة هوائية"}
                       </option>
                     ))}
                   </select>
                 </label>
 
                 <label>
-                  <span><Truck size={14}/>الحالة</span>
+                  <span><Truck size={14} />الحالة</span>
                   <select
                     value={delivery.status}
                     onChange={(event) =>
-                      void updateStatus(delivery.id, event.target.value as DeliveryStatus)
+                      void updateStatus(
+                        delivery.id,
+                        event.target.value as DeliveryStatus
+                      )
                     }
                   >
                     {Object.entries(statusLabel).map(([value, label]) => (
@@ -290,13 +399,15 @@ export default function AdminDispatchPage() {
                 </label>
 
                 <label>
-                  <span><CircleDollarSign size={14}/>السعر المقترح (درهم)</span>
+                  <span><CircleDollarSign size={14} />السعر المقترح (درهم)</span>
                   <input
                     type="number"
                     min="0"
                     step="1"
                     defaultValue={delivery.quotedPriceMad ?? ""}
-                    onBlur={(event) => void savePrice(delivery.id, event.target.value)}
+                    onBlur={(event) =>
+                      void savePrice(delivery.id, event.target.value)
+                    }
                     placeholder="مثال: 15"
                   />
                 </label>
@@ -304,7 +415,9 @@ export default function AdminDispatchPage() {
 
               <div className="deliveryMeta">
                 <span>السائق: {delivery.riderName || "لم يُعيّن بعد"}</span>
-                <span>الطلب: {new Date(delivery.requestedAt).toLocaleString("ar-MA")}</span>
+                <span>
+                  الطلب: {new Date(delivery.requestedAt).toLocaleString("ar-MA")}
+                </span>
               </div>
             </article>
           ))}
