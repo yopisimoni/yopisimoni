@@ -6,16 +6,16 @@ import { useState } from "react";
 export type InfoLang = "ar" | "fr" | "en";
 
 type Section = {
-  title: string;
-  paragraphs?: string[];
-  bullets?: string[];
+  readonly title: string;
+  readonly paragraphs?: readonly string[];
+  readonly bullets?: readonly string[];
 };
 
 type Content = {
-  title: string;
-  updated: string;
-  intro?: string;
-  sections: Section[];
+  readonly title: string;
+  readonly updated: string;
+  readonly intro?: string;
+  readonly sections: readonly Section[];
 };
 
 export default function InfoPage({
