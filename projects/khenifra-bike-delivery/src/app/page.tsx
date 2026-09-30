@@ -1,6 +1,21 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import {
+  Bike,
+  CheckCircle2,
+  FileText,
+  MapPin,
+  Navigation,
+  Package,
+  Phone,
+  ReceiptText,
+  Send,
+  ShoppingBag,
+  Store,
+  UtensilsCrossed,
+} from "lucide-react";
+import BrandMark from "@/components/BrandMark";
 import { createDelivery } from "@/lib/appwrite/deliveries";
 
 type Lang = "ar" | "fr" | "en";
@@ -29,6 +44,7 @@ const copy = {
     riderText: "استقبل الطلبات القريبة، اقبل المهمة، أكد الاستلام وأكمل التوصيل من هاتفك.",
     join: "انضم إلى التجربة", created: "تم إنشاء الطلب التجريبي", order: "رقم الطلب",
     status: "الحالة", statusValue: "بانتظار تعيين سائق", reset: "طلب جديد",
+    fast: "داخل خنيفرة", cashShort: "دفع نقدي", tracked: "حالة واضحة",
   },
   fr: {
     brand: "Khenifra Livraison", eyebrow: "LIVRAISON LOCALE · KHENIFRA",
@@ -53,6 +69,7 @@ const copy = {
     riderText: "Recevez les demandes proches, acceptez les missions, confirmez le ramassage et terminez les livraisons depuis votre téléphone.",
     join: "Rejoindre le pilote", created: "Demande test créée", order: "Commande",
     status: "Statut", statusValue: "En attente d’un livreur", reset: "Nouvelle demande",
+    fast: "Dans Khenifra", cashShort: "Paiement cash", tracked: "Statut clair",
   },
   en: {
     brand: "Khenifra Delivery", eyebrow: "LOCAL DELIVERY · KHENIFRA", title: "Send it across the city.",
@@ -76,8 +93,11 @@ const copy = {
     riderText: "Receive nearby requests, accept jobs, confirm pickup and complete deliveries from your phone.",
     join: "Join pilot", created: "Test request created", order: "Order",
     status: "Status", statusValue: "Waiting for rider assignment", reset: "New request",
+    fast: "Across Khenifra", cashShort: "Cash payment", tracked: "Clear status",
   },
 } as const;
+
+const ServiceIcons = [UtensilsCrossed, Store, FileText, Package];
 
 export default function Home() {
   const [lang, setLang] = useState<Lang>("ar");
@@ -91,23 +111,17 @@ export default function Home() {
     event.preventDefault();
     setSubmitting(true);
     setSubmitError("");
-
     const form = new FormData(event.currentTarget);
 
     try {
       const delivery = await createDelivery({
         pickupAddress: String(form.get("pickup") || ""),
         dropoffAddress: String(form.get("dropoff") || ""),
-        category: String(form.get("category") || "parcel") as
-          | "food"
-          | "groceries"
-          | "documents"
-          | "parcel",
+        category: String(form.get("category") || "parcel") as "food" | "groceries" | "documents" | "parcel",
         senderPhone: String(form.get("senderPhone") || ""),
         recipientPhone: String(form.get("recipientPhone") || ""),
         notes: String(form.get("notes") || ""),
       });
-
       setOrderCode(delivery.orderCode);
     } catch (error) {
       console.error(error);
@@ -126,7 +140,7 @@ export default function Home() {
   return (
     <main dir={rtl ? "rtl" : "ltr"} lang={lang}>
       <nav className="nav">
-        <strong>{t.brand}</strong>
+        <BrandMark />
         <div className="langSwitcher" aria-label="Language selector">
           <button className={lang === "ar" ? "active" : ""} onClick={() => setLang("ar")}>العربية</button>
           <button className={lang === "fr" ? "active" : ""} onClick={() => setLang("fr")}>Français</button>
@@ -134,20 +148,41 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="hero">
-        <div>
+      <section className="hero heroFresh">
+        <div className="heroCopy">
           <span className="eyebrow">{t.eyebrow}</span>
           <h1>{t.title}</h1>
           <p className="lead">{t.lead}</p>
+          <div className="trustStrip">
+            <span><MapPin size={16} />{t.fast}</span>
+            <span><ReceiptText size={16} />{t.cashShort}</span>
+            <span><CheckCircle2 size={16} />{t.tracked}</span>
+          </div>
           <div className="actions">
-            <a className="button primary" href="#request">{t.request}</a>
-            <a className="button secondary" href="#riders">{t.rider}</a>
+            <a className="button primary iconButton" href="#request"><Send size={18}/>{t.request}</a>
+            <a className="button secondary iconButton" href="/rider"><Bike size={19}/>{t.rider}</a>
+          </div>
+
+          <div className="heroVisual" aria-hidden="true">
+            <div className="visualGlow"></div>
+            <div className="miniCityCard pickupMini">
+              <span className="miniIcon"><Store size={20}/></span>
+              <div><small>{t.pickup}</small><strong>Centre Khenifra</strong></div>
+            </div>
+            <div className="routeTrack"><span></span><span></span><span></span></div>
+            <div className="riderBubble"><Bike size={30}/></div>
+            <div className="miniCityCard dropMini">
+              <span className="miniIcon"><MapPin size={20}/></span>
+              <div><small>{t.dropoff}</small><strong>Hay Al Massira</strong></div>
+            </div>
+            <div className="parcelBubble"><Package size={25}/></div>
           </div>
         </div>
 
-        <div className="requestCard" id="request">
+        <div className="requestCard elevatedCard" id="request">
           {orderCode ? (
             <div className="confirmation">
+              <div className="successOrb"><CheckCircle2 size={38}/></div>
               <span className="status">{t.created}</span>
               <div className="orderBadge">{orderCode}</div>
               <p><strong>{t.status}:</strong> {t.statusValue}</p>
@@ -155,13 +190,16 @@ export default function Home() {
             </div>
           ) : (
             <form onSubmit={submitRequest}>
-              <span className="status">{t.requestTag}</span>
+              <div className="cardTitleRow">
+                <span className="status">{t.requestTag}</span>
+                <Navigation size={22}/>
+              </div>
               <h2>{t.where}</h2>
-              <label>{t.pickup}</label>
+              <label><MapPin size={15}/>{t.pickup}</label>
               <input name="pickup" required placeholder={t.pickupPlaceholder} />
-              <label>{t.dropoff}</label>
+              <label><Navigation size={15}/>{t.dropoff}</label>
               <input name="dropoff" required placeholder={t.dropoffPlaceholder} />
-              <label>{t.carrying}</label>
+              <label><Package size={15}/>{t.carrying}</label>
               <select name="category" defaultValue="" required>
                 <option value="" disabled>{t.choose}</option>
                 <option value="food">{t.food}</option>
@@ -170,18 +208,14 @@ export default function Home() {
                 <option value="parcel">{t.parcel}</option>
               </select>
               <div className="twoCols">
-                <div>
-                  <label>{t.senderPhone}</label>
-                  <input name="senderPhone" type="tel" required placeholder={t.phonePlaceholder} />
-                </div>
-                <div>
-                  <label>{t.recipientPhone}</label>
-                  <input name="recipientPhone" type="tel" required placeholder={t.phonePlaceholder} />
-                </div>
+                <div><label><Phone size={15}/>{t.senderPhone}</label><input name="senderPhone" type="tel" required placeholder={t.phonePlaceholder} /></div>
+                <div><label><Phone size={15}/>{t.recipientPhone}</label><input name="recipientPhone" type="tel" required placeholder={t.phonePlaceholder} /></div>
               </div>
-              <label>{t.notes}</label>
+              <label><FileText size={15}/>{t.notes}</label>
               <textarea name="notes" rows={3} placeholder={t.notesPlaceholder} />
-              <button type="submit" disabled={submitting}>{submitting ? "..." : t.estimate}</button>
+              <button type="submit" disabled={submitting} className="submitWithIcon">
+                <Send size={18}/>{submitting ? "..." : t.estimate}
+              </button>
               {submitError ? <p className="formError">{submitError}</p> : null}
               <small>{t.cash}</small>
             </form>
@@ -192,23 +226,26 @@ export default function Home() {
       <section className="services">
         <div className="sectionHead"><span className="eyebrow">{t.network}</span><h2>{t.useful}</h2></div>
         <div className="grid">
-          {t.services.map(([title, text]) => (
-            <article key={title}><div className="icon">↗</div><h3>{title}</h3><p>{text}</p></article>
-          ))}
+          {t.services.map(([title, text], index) => {
+            const Icon = ServiceIcons[index];
+            return <article key={title} className="serviceCard"><div className="icon"><Icon size={22}/></div><h3>{title}</h3><p>{text}</p><span className="cardArrow">↗</span></article>;
+          })}
         </div>
       </section>
 
-      <section className="rider" id="riders">
-        <div><span className="eyebrow">{t.forRiders}</span><h2>{t.riderTitle}</h2><p>{t.riderText}</p></div>
-        <a className="button primary" href="/rider">{t.join}</a>
+      <section className="rider riderFresh" id="riders">
+        <div className="riderVisual" aria-hidden="true"><div className="riderVisualCircle"><Bike size={42}/></div><div className="speedLine s1"></div><div className="speedLine s2"></div><div className="speedLine s3"></div></div>
+        <div className="riderCopy"><span className="eyebrow">{t.forRiders}</span><h2>{t.riderTitle}</h2><p>{t.riderText}</p></div>
+        <a className="button primary iconButton" href="/rider"><Bike size={18}/>{t.join}</a>
       </section>
-          <footer className="siteFooter">
-        <div className="footerBrand"><strong>{t.brand}</strong><span>© 2026</span></div>
+
+      <footer className="siteFooter">
+        <div className="footerBrand"><BrandMark compact/><strong>{t.brand}</strong><span>© 2026</span></div>
         <nav aria-label="Legal and information">
           <a href="/about">{lang === "ar" ? "من نحن" : lang === "fr" ? "À propos" : "About"}</a>
           <a href="/privacy">{lang === "ar" ? "الخصوصية" : lang === "fr" ? "Confidentialité" : "Privacy"}</a>
           <a href="/terms">{lang === "ar" ? "الشروط" : lang === "fr" ? "Conditions" : "Terms"}</a>
-          <a href="/contact">{lang === "ar" ? "اتصل بنا" : lang === "fr" ? "Contact" : "Contact"}</a>
+          <a href="/contact">{lang === "ar" ? "اتصل بنا" : "Contact"}</a>
           <a href="/delete-data">{lang === "ar" ? "حذف البيانات" : lang === "fr" ? "Supprimer mes données" : "Delete data"}</a>
         </nav>
       </footer>
