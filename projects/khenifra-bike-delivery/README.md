@@ -87,3 +87,8 @@ Before building the full marketplace:
 ## Folder status
 
 MVP shell initialized. Appwrite is the active backend choice. Next: create the Appwrite project/database/tables, connect authentication, persist delivery requests, then build realtime dispatch and mapping.
+
+
+## Native mobile packaging
+
+Android and iOS packaging is configured with Capacitor while the web app remains the canonical product and backend. See [docs/MOBILE_ANDROID_IOS.md](docs/MOBILE_ANDROID_IOS.md).
