@@ -16,6 +16,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
+import AuthNav from "@/components/AuthNav";
 import { createDelivery } from "@/lib/appwrite/deliveries";
 
 type Lang = "ar" | "fr" | "en";
@@ -147,10 +148,13 @@ export default function Home() {
     <main dir={rtl ? "rtl" : "ltr"} lang={lang}>
       <nav className="nav">
         <BrandMark />
-        <div className="langSwitcher" aria-label="Language selector">
-          <button className={lang === "ar" ? "active" : ""} onClick={() => setLang("ar")}>العربية</button>
-          <button className={lang === "fr" ? "active" : ""} onClick={() => setLang("fr")}>Français</button>
-          <button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>English</button>
+        <div className="navRight">
+          <div className="langSwitcher" aria-label="Language selector">
+            <button className={lang === "ar" ? "active" : ""} onClick={() => setLang("ar")}>العربية</button>
+            <button className={lang === "fr" ? "active" : ""} onClick={() => setLang("fr")}>Français</button>
+            <button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>English</button>
+          </div>
+          <AuthNav />
         </div>
       </nav>
 
