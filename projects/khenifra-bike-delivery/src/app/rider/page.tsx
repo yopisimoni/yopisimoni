@@ -63,7 +63,7 @@ export default function RiderApplicationPage() {
               <span className="status">{t.success}</span>
               <h1>{t.success}</h1>
               <p>{t.successText}</p>
-              <Link className="button primary iconButton" href="/"><ChevronLeft size={18}/>{t.back}</Link>
+              <div className="successActions"><Link className="button primary iconButton" href="/rider/dashboard"><Bike size={18}/>لوحة السائق</Link><Link className="button secondary iconButton" href="/"><ChevronLeft size={18}/>{t.back}</Link></div>
             </div>
           ) : (
             <form onSubmit={submit}>
