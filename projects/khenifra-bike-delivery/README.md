@@ -56,11 +56,14 @@ To validate locally, start with transparent zone-based pricing rather than compl
 - Next.js + TypeScript
 - Responsive PWA
 - Tailwind/CSS
-- Supabase: Auth, Postgres, Realtime, Storage
+- Appwrite: Auth, TablesDB, Realtime, Storage
 - OpenStreetMap/MapLibre or Leaflet for maps
 - WhatsApp deep links for support/fallback
 - Cash first; add Moroccan online payment only after validating demand
-- Arabic-first interface (default) with full RTL support\n- French as secondary language\n- English as tertiary language\n- All customer, rider, merchant and admin screens must use shared translation keys; no hard-coded single-language UI
+- Arabic-first interface (default) with full RTL support
+- French as secondary language
+- English as tertiary language
+- All customer, rider, merchant and admin screens must use shared translation keys; no hard-coded single-language UI
 
 ## Core entities
 
@@ -83,4 +86,4 @@ Before building the full marketplace:
 
 ## Folder status
 
-MVP shell initialized. Backend, authentication, realtime dispatch and mapping are the next implementation stage.
+MVP shell initialized. Appwrite is the active backend choice. Next: create the Appwrite project/database/tables, connect authentication, persist delivery requests, then build realtime dispatch and mapping.
