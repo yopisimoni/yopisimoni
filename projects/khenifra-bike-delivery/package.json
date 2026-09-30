@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "setup:appwrite": "node scripts/setup-appwrite.mjs"
   },
   "dependencies": {
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "appwrite": "17.0.0"
+    "appwrite": "17.0.0",
+    "node-appwrite": "latest"
   },
   "devDependencies": {
     "@types/node": "latest",
