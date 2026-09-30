@@ -200,7 +200,7 @@ export default function Home() {
 
       <section className="rider" id="riders">
         <div><span className="eyebrow">{t.forRiders}</span><h2>{t.riderTitle}</h2><p>{t.riderText}</p></div>
-        <a className="button primary" href="mailto:simohamed.amara@gmail.com?subject=Khenifra%20Delivery%20Rider">{t.join}</a>
+        <a className="button primary" href="/rider">{t.join}</a>
       </section>
     </main>
   );
