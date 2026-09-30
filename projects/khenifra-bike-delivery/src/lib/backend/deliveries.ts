@@ -17,6 +17,8 @@ export type CreateDeliveryInput = {
   senderPhone: string;
   recipientPhone: string;
   notes?: string;
+  pickupLat?: number;
+  pickupLng?: number;
 };
 
 export type DeliveryRecord = CreateDeliveryInput & {
