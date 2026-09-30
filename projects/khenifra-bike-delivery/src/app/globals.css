@@ -73,3 +73,11 @@
 .formError{color:#922f2f;font-weight:700}
 @media(max-width:900px){.adminGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.adminGrid{grid-template-columns:1fr}.adminHeader{align-items:flex-start;flex-direction:column}}
+
+
+.siteFooter{max-width:1180px;margin:0 auto;padding:30px 24px 44px;border-top:1px solid #dfe4df;display:flex;justify-content:space-between;gap:24px;align-items:center;color:#5c6760}
+.footerBrand{display:flex;gap:10px;align-items:center}.siteFooter nav{display:flex;gap:18px;flex-wrap:wrap}.siteFooter a{text-decoration:underline;text-underline-offset:3px}
+.infoPage{min-height:100vh;padding-bottom:60px}.infoNav{max-width:960px}.infoCard{max-width:900px;margin:28px auto 60px;background:#fff;border-radius:28px;padding:38px;box-shadow:0 24px 80px rgba(26,47,34,.08)}
+.infoCard h1{font-size:clamp(38px,7vw,64px);line-height:1.05;margin:18px 0 8px}.infoUpdated{color:#718078;font-size:14px}.infoIntro{font-size:19px;line-height:1.75;color:#445149;margin:26px 0 34px}
+.infoSection{padding:24px 0;border-top:1px solid #edf0ed}.infoSection h2{font-size:23px;margin:0 0 12px}.infoSection p,.infoSection li{line-height:1.8;color:#536059}.infoSection ul{padding-inline-start:22px}.infoActions{margin-top:28px}
+@media(max-width:620px){.siteFooter{align-items:flex-start;flex-direction:column}.infoCard{margin:16px;padding:24px}.infoCard h1{font-size:40px}}
