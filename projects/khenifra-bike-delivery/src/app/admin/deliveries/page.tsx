@@ -189,31 +189,6 @@ export default function AdminDispatchPage() {
   }
 
   return (
-      <main dir="rtl" className="adminPage">
-        <div className="adminLogin">
-          <span className="status">Khenifra Delivery Admin</span>
-          <h1>لوحة التوصيلات</h1>
-          <p>أدخل رمز الإدارة لعرض الطلبات وتعيين السائقين.</p>
-          <form onSubmit={login}>
-            <label>رمز الإدارة</label>
-            <input
-              type="password"
-              value={passcode}
-              onChange={(event) => setPasscode(event.target.value)}
-              required
-            />
-            <button type="submit" disabled={loading}>
-              {loading ? "جارٍ التحميل..." : "دخول"}
-            </button>
-          </form>
-          {error ? <p className="formError">{error}</p> : null}
-          <Link href="/admin" className="textLink">إدارة السائقين</Link>
-        </div>
-      </main>
-    );
-  }
-
-  return (
     <main dir="rtl" className="adminPage">
       <div className="adminHeader dispatchHeader">
         <div>
