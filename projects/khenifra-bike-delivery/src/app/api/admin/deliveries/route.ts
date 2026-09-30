@@ -187,9 +187,29 @@ export async function PATCH(request: NextRequest) {
         riderRows.rows.filter((row: any) => row.status === "approved").map((row: any) => row.user_id)
       );
 
-      const available = locationRows.rows.filter(
-        (row: any) => row.is_available && approvedIds.has(row.user_id)
+      const freshCutoff = Date.now() - 5 * 60 * 1000;
+      const busyIds = new Set(
+        (await adminTablesDB.listRows({
+          databaseId: adminDatabaseId,
+          tableId: deliveriesTableId,
+        })).rows
+          .filter((row: any) =>
+            ["assigned", "rider_to_pickup", "picked_up", "rider_to_dropoff"].includes(row.status)
+          )
+          .map((row: any) => row.rider_id)
+          .filter(Boolean)
       );
+
+      const available = locationRows.rows.filter((row: any) => {
+        const updatedAt = new Date(row.updated_at).getTime();
+        return (
+          row.is_available &&
+          approvedIds.has(row.user_id) &&
+          !busyIds.has(row.user_id) &&
+          Number.isFinite(updatedAt) &&
+          updatedAt >= freshCutoff
+        );
+      });
 
       const toRad = (value: number) => (value * Math.PI) / 180;
       const distanceKm = (lat1: number, lng1: number, lat2: number, lng2: number) => {
@@ -215,7 +235,18 @@ export async function PATCH(request: NextRequest) {
         .sort((a: any, b: any) => a.distanceKm - b.distanceKm)[0];
 
       if (!nearest) {
-        return NextResponse.json({ error: "No approved available riders" }, { status: 404 });
+        return NextResponse.json(
+          { error: "No approved, fresh, available riders" },
+          { status: 404 }
+        );
+      }
+
+      const maxRadiusKm = 8;
+      if (nearest.distanceKm > maxRadiusKm) {
+        return NextResponse.json(
+          { error: "No available rider inside service radius" },
+          { status: 404 }
+        );
       }
 
       const now = new Date().toISOString();
