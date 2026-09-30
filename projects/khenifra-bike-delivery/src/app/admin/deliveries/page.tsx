@@ -29,6 +29,8 @@ type Delivery = {
   notes: string;
   quotedPriceMad: number | null;
   requestedAt: string;
+  pickupLat: number | null;
+  pickupLng: number | null;
 };
 
 type Rider = {
@@ -121,6 +123,16 @@ export default function AdminDispatchPage() {
       throw new Error(json.detail || json.error || "تعذر تحديث الطلب");
     }
     return json;
+  }
+
+  async function assignNearest(deliveryId: string) {
+    setError("");
+    try {
+      await patch({ action: "assign_nearest", deliveryId });
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذر العثور على سائق قريب");
+    }
   }
 
   async function assign(deliveryId: string, riderUserId: string) {
@@ -274,6 +286,13 @@ export default function AdminDispatchPage() {
               </div>
 
               {delivery.notes ? <p className="deliveryNotes">{delivery.notes}</p> : null}
+
+              <div className="nearestAssignRow">
+                <button className="nearestAssignButton" disabled={delivery.pickupLat == null || delivery.pickupLng == null} onClick={() => void assignNearest(delivery.id)}>
+                  <Navigation size={17}/> تعيين أقرب سائق متاح
+                </button>
+                {delivery.pickupLat == null ? <small>أضف موقع الاستلام من واجهة العميل لتفعيل الاختيار التلقائي.</small> : <small>سيتم اختيار أقرب سائق معتمد وحالته متاح.</small>}
+              </div>
 
               <div className="dispatchControls">
                 <label>
