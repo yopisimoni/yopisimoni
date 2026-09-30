@@ -81,3 +81,74 @@ alter table public.delivery_events enable row level security;
 
 -- Add policies after authentication roles/admin claims are finalized.
 -- Never expose the service-role key to client-side code.
+
+
+-- Performance indexes required by foreign keys
+create index if not exists businesses_owner_idx on public.businesses(owner_id);
+create index if not exists deliveries_business_idx on public.deliveries(business_id);
+create index if not exists deliveries_customer_idx on public.deliveries(customer_id);
+create index if not exists delivery_events_actor_idx on public.delivery_events(actor_id);
+
+-- Authenticated ownership/participant policies
+create policy "profiles_select_own"
+on public.profiles for select to authenticated
+using ((select auth.uid()) = id);
+
+create policy "profiles_insert_own"
+on public.profiles for insert to authenticated
+with check ((select auth.uid()) = id);
+
+create policy "profiles_update_own"
+on public.profiles for update to authenticated
+using ((select auth.uid()) = id)
+with check ((select auth.uid()) = id);
+
+create policy "riders_select_own"
+on public.riders for select to authenticated
+using ((select auth.uid()) = id);
+
+create policy "riders_update_own"
+on public.riders for update to authenticated
+using ((select auth.uid()) = id)
+with check ((select auth.uid()) = id);
+
+create policy "businesses_owner_all"
+on public.businesses for all to authenticated
+using ((select auth.uid()) = owner_id)
+with check ((select auth.uid()) = owner_id);
+
+create policy "deliveries_customer_insert"
+on public.deliveries for insert to authenticated
+with check ((select auth.uid()) = customer_id);
+
+create policy "deliveries_participant_select"
+on public.deliveries for select to authenticated
+using (
+  (select auth.uid()) = customer_id
+  or (select auth.uid()) = rider_id
+);
+
+create policy "deliveries_participant_update"
+on public.deliveries for update to authenticated
+using (
+  (select auth.uid()) = customer_id
+  or (select auth.uid()) = rider_id
+)
+with check (
+  (select auth.uid()) = customer_id
+  or (select auth.uid()) = rider_id
+);
+
+create policy "delivery_events_participant_select"
+on public.delivery_events for select to authenticated
+using (
+  exists (
+    select 1
+    from public.deliveries d
+    where d.id = delivery_id
+      and (
+        d.customer_id = (select auth.uid())
+        or d.rider_id = (select auth.uid())
+      )
+  )
+);
