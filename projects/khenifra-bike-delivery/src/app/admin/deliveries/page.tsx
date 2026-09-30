@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Bike, CheckCircle2, CircleDollarSign, Clock3, LayoutDashboard, MapPin, Navigation, Package, Phone, RefreshCw, Route, Truck, XCircle } from "lucide-react";
 
 type DeliveryStatus =
   | "requested"
@@ -222,9 +223,16 @@ export default function AdminDispatchPage() {
           </p>
         </div>
         <div className="adminHeaderActions">
-          <Link className="adminLinkButton" href="/admin">السائقون</Link>
-          <button onClick={() => void load()}>تحديث</button>
+          <Link className="adminLinkButton iconButton" href="/admin"><Bike size={17}/>السائقون</Link>
+          <button className="iconButton" onClick={() => void load()}><RefreshCw size={16}/>تحديث</button>
         </div>
+      </div>
+
+      <div className="kpiGrid dispatchKpis">
+        <div className="kpiCard"><span className="kpiIcon amber"><Clock3/></span><div><small>طلبات نشطة</small><strong>{activeCount}</strong></div></div>
+        <div className="kpiCard"><span className="kpiIcon green"><Bike/></span><div><small>سائقون معتمدون</small><strong>{riders.length}</strong></div></div>
+        <div className="kpiCard"><span className="kpiIcon blue"><Package/></span><div><small>كل الطلبات</small><strong>{deliveries.length}</strong></div></div>
+        <div className="kpiCard"><span className="kpiIcon red"><XCircle/></span><div><small>مغلقة / فاشلة</small><strong>{deliveries.length-activeCount}</strong></div></div>
       </div>
 
       <div className="dispatchFilters">
@@ -248,20 +256,20 @@ export default function AdminDispatchPage() {
                     {statusLabel[delivery.status]}
                   </span>
                 </div>
-                <span>{categoryLabel[delivery.category] || delivery.category}</span>
+                <span className="categoryChip"><Package size={14}/>{categoryLabel[delivery.category] || delivery.category}</span>
               </div>
 
               <div className="deliveryRoute">
                 <div>
-                  <small>الاستلام</small>
+                  <small><MapPin size={14}/>الاستلام</small>
                   <strong>{delivery.pickupAddress}</strong>
-                  <a href={"tel:" + delivery.senderPhone}>{delivery.senderPhone}</a>
+                  <a href={"tel:" + delivery.senderPhone}><Phone size={14}/>{delivery.senderPhone}</a>
                 </div>
-                <div className="routeArrow">←</div>
+                <div className="routeArrow"><Route size={22}/></div>
                 <div>
-                  <small>التسليم</small>
+                  <small><Navigation size={14}/>التسليم</small>
                   <strong>{delivery.dropoffAddress}</strong>
-                  <a href={"tel:" + delivery.recipientPhone}>{delivery.recipientPhone}</a>
+                  <a href={"tel:" + delivery.recipientPhone}><Phone size={14}/>{delivery.recipientPhone}</a>
                 </div>
               </div>
 
@@ -269,7 +277,7 @@ export default function AdminDispatchPage() {
 
               <div className="dispatchControls">
                 <label>
-                  <span>السائق</span>
+                  <span><Bike size={14}/>السائق</span>
                   <select
                     value={delivery.riderId || ""}
                     onChange={(event) => void assign(delivery.id, event.target.value)}
@@ -284,7 +292,7 @@ export default function AdminDispatchPage() {
                 </label>
 
                 <label>
-                  <span>الحالة</span>
+                  <span><Truck size={14}/>الحالة</span>
                   <select
                     value={delivery.status}
                     onChange={(event) =>
@@ -298,7 +306,7 @@ export default function AdminDispatchPage() {
                 </label>
 
                 <label>
-                  <span>السعر المقترح (درهم)</span>
+                  <span><CircleDollarSign size={14}/>السعر المقترح (درهم)</span>
                   <input
                     type="number"
                     min="0"
