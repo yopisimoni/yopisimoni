@@ -43,3 +43,33 @@
   color: inherit;
   text-decoration: underline;
 }
+
+
+.adminPage{max-width:1180px;margin:auto;padding:48px 24px 80px;min-height:100vh}
+.adminLogin{max-width:520px;margin:8vh auto;background:#fff;border-radius:24px;padding:30px;box-shadow:0 24px 80px rgba(26,47,34,.10)}
+.adminLogin h1,.adminHeader h1{margin:14px 0 8px}
+.adminLogin p,.adminHeader p{color:#667169}
+.adminLogin label{display:block;font-weight:750;font-size:13px;margin:22px 0 7px}
+.adminLogin input{width:100%;padding:14px;border:1px solid #d9ded9;border-radius:12px}
+.adminLogin button,.adminHeaderActions button,.adminCardActions button{border:0;background:#163d27;color:#fff;padding:12px 16px;border-radius:11px;font-weight:800;cursor:pointer}
+.adminLogin form>button{width:100%;margin-top:16px}
+.adminHeader{display:flex;justify-content:space-between;gap:24px;align-items:center;margin-bottom:38px}
+.adminHeaderActions{display:flex;gap:10px}
+.adminHeaderActions .secondaryAdminButton{background:#fff;color:#163d27;border:1px solid #d9ded9}
+.adminSection{margin:32px 0}
+.adminSection h2{font-size:26px;margin-bottom:16px}
+.adminGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.riderAdminCard{background:#fff;border:1px solid #e0e4e0;border-radius:20px;padding:20px}
+.riderAdminTop{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}
+.riderAdminCard p{color:#58645d;margin:9px 0}
+.adminCardActions{display:flex;gap:8px;margin-top:18px}
+.adminCardActions button{flex:1}
+.adminCardActions .dangerButton{background:#7e2c2c}
+.pendingPill,.approvedPill,.suspendedPill{font-size:11px;font-weight:900;padding:6px 9px;border-radius:999px}
+.pendingPill{background:#fff1c9;color:#7f5a00}
+.approvedPill{background:#e5f2e8;color:#28693f}
+.suspendedPill{background:#f6dddd;color:#7e2c2c}
+.emptyAdmin{background:#fff;border:1px dashed #d5dbd6;border-radius:18px;padding:24px;color:#667169}
+.formError{color:#922f2f;font-weight:700}
+@media(max-width:900px){.adminGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.adminGrid{grid-template-columns:1fr}.adminHeader{align-items:flex-start;flex-direction:column}}
