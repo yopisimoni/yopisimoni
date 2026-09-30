@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { createDelivery } from "@/lib/appwrite/deliveries";
 
 type Lang = "ar" | "fr" | "en";
 
@@ -81,13 +82,45 @@ const copy = {
 export default function Home() {
   const [lang, setLang] = useState<Lang>("ar");
   const [orderCode, setOrderCode] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const t = copy[lang];
   const rtl = lang === "ar";
 
-  function submitRequest(event: FormEvent<HTMLFormElement>) {
+  async function submitRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const code = "KHF-" + Math.random().toString(36).slice(2, 7).toUpperCase();
-    setOrderCode(code);
+    setSubmitting(true);
+    setSubmitError("");
+
+    const form = new FormData(event.currentTarget);
+
+    try {
+      const delivery = await createDelivery({
+        pickupAddress: String(form.get("pickup") || ""),
+        dropoffAddress: String(form.get("dropoff") || ""),
+        category: String(form.get("category") || "parcel") as
+          | "food"
+          | "groceries"
+          | "documents"
+          | "parcel",
+        senderPhone: String(form.get("senderPhone") || ""),
+        recipientPhone: String(form.get("recipientPhone") || ""),
+        notes: String(form.get("notes") || ""),
+      });
+
+      setOrderCode(delivery.orderCode);
+    } catch (error) {
+      console.error(error);
+      setSubmitError(
+        lang === "ar"
+          ? "تعذر إنشاء الطلب الآن. تحقق من اتصال Appwrite وحاول مرة أخرى."
+          : lang === "fr"
+            ? "Impossible de créer la demande. Vérifiez la connexion Appwrite et réessayez."
+            : "Could not create the delivery. Check the Appwrite connection and try again."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -148,7 +181,8 @@ export default function Home() {
               </div>
               <label>{t.notes}</label>
               <textarea name="notes" rows={3} placeholder={t.notesPlaceholder} />
-              <button type="submit">{t.estimate}</button>
+              <button type="submit" disabled={submitting}>{submitting ? "..." : t.estimate}</button>
+              {submitError ? <p className="formError">{submitError}</p> : null}
               <small>{t.cash}</small>
             </form>
           )}
