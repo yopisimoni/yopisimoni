@@ -11,6 +11,7 @@ import {
   Package,
   Phone,
   Plus,
+  Route,
   UserRound,
 } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
@@ -114,6 +115,7 @@ export default function AccountPage() {
                   <span>{new Date(delivery.requested_at).toLocaleString("ar-MA")}</span>
                   <strong>{typeof delivery.final_price_mad === "number" ? delivery.final_price_mad : typeof delivery.quoted_price_mad === "number" ? delivery.quoted_price_mad : "—"} {typeof delivery.final_price_mad === "number" || typeof delivery.quoted_price_mad === "number" ? "MAD" : ""}</strong>
                 </div>
+                <Link className="trackOrderButton" href={"/track/" + delivery.$id}><Route size={16}/>{delivery.status === "delivered" ? "عرض التفاصيل والتقييم" : "تتبع الطلب"}</Link>
               </article>
             ))}
           </div>
