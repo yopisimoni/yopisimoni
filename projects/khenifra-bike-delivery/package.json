@@ -14,7 +14,8 @@
     "react": "latest",
     "react-dom": "latest",
     "appwrite": "28.1.0",
-    "node-appwrite": "latest"
+    "node-appwrite": "latest",
+    "lucide-react": "latest"
   },
   "devDependencies": {
     "@types/node": "latest",
