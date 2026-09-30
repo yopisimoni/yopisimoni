@@ -10,6 +10,7 @@ const profilesTableId =
   process.env.NEXT_PUBLIC_APPWRITE_PROFILES_TABLE_ID || "profiles";
 const eventsTableId =
   process.env.NEXT_PUBLIC_APPWRITE_DELIVERY_EVENTS_TABLE_ID || "delivery_events";
+const locationsTableId = "rider_locations";
 
 const statuses = [
   "requested",
@@ -130,6 +131,8 @@ export async function GET(request: NextRequest) {
       assignedAt: delivery.assigned_at || null,
       pickedUpAt: delivery.picked_up_at || null,
       deliveredAt: delivery.delivered_at || null,
+      pickupLat: delivery.pickup_lat ?? null,
+      pickupLng: delivery.pickup_lng ?? null,
     }));
 
     return NextResponse.json({
@@ -169,6 +172,82 @@ export async function PATCH(request: NextRequest) {
       tableId: deliveriesTableId,
       rowId: deliveryId,
     });
+
+    if (action === "assign_nearest") {
+      if (typeof delivery.pickup_lat !== "number" || typeof delivery.pickup_lng !== "number") {
+        return NextResponse.json({ error: "Pickup location is missing" }, { status: 400 });
+      }
+
+      const [riderRows, locationRows] = await Promise.all([
+        adminTablesDB.listRows({ databaseId: adminDatabaseId, tableId: ridersTableId }),
+        adminTablesDB.listRows({ databaseId: adminDatabaseId, tableId: locationsTableId }),
+      ]);
+
+      const approvedIds = new Set(
+        riderRows.rows.filter((row: any) => row.status === "approved").map((row: any) => row.user_id)
+      );
+
+      const available = locationRows.rows.filter(
+        (row: any) => row.is_available && approvedIds.has(row.user_id)
+      );
+
+      const toRad = (value: number) => (value * Math.PI) / 180;
+      const distanceKm = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+        const R = 6371;
+        const dLat = toRad(lat2 - lat1);
+        const dLng = toRad(lng2 - lng1);
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+        return 2 * R * Math.asin(Math.sqrt(a));
+      };
+
+      const nearest: any = available
+        .map((row: any) => ({
+          ...row,
+          distanceKm: distanceKm(
+            delivery.pickup_lat,
+            delivery.pickup_lng,
+            row.lat,
+            row.lng
+          ),
+        }))
+        .sort((a: any, b: any) => a.distanceKm - b.distanceKm)[0];
+
+      if (!nearest) {
+        return NextResponse.json({ error: "No approved available riders" }, { status: 404 });
+      }
+
+      const now = new Date().toISOString();
+      const updated: any = await adminTablesDB.updateRow({
+        databaseId: adminDatabaseId,
+        tableId: deliveriesTableId,
+        rowId: deliveryId,
+        data: {
+          rider_id: nearest.user_id,
+          status: "assigned",
+          assigned_at: now,
+        },
+        permissions: participantPermissions(delivery.customer_id, nearest.user_id),
+      });
+
+      await createEvent({
+        deliveryId,
+        customerId: delivery.customer_id,
+        riderId: nearest.user_id,
+        status: "assigned",
+        note: `Nearest available rider assigned (${nearest.distanceKm.toFixed(2)} km)`,
+      });
+
+      return NextResponse.json({
+        delivery: {
+          id: updated.$id,
+          riderId: nearest.user_id,
+          status: updated.status,
+          distanceKm: nearest.distanceKm,
+        },
+      });
+    }
 
     if (action === "assign") {
       const riderUserId = String(body.riderUserId || "");
