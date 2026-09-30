@@ -1,0 +1,24 @@
+{
+  "name": "توصيل خنيفرة",
+  "short_name": "توصيل خنيفرة",
+  "description": "خدمة توصيل محلية داخل خنيفرة",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f6f2",
+  "theme_color": "#163d27",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": [
+    "delivery",
+    "shopping",
+    "business"
+  ],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
