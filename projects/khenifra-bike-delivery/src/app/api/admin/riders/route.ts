@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDatabaseId, adminTablesDB } from "@/lib/appwrite/admin-server";
+import { getAuthorizedAdmin } from "@/lib/appwrite/admin-auth-server";
 
 const ridersTableId = process.env.NEXT_PUBLIC_APPWRITE_RIDERS_TABLE_ID || "riders";
 const profilesTableId = process.env.NEXT_PUBLIC_APPWRITE_PROFILES_TABLE_ID || "profiles";
 
-function authorized(request: NextRequest) {
-  const configured = process.env.ADMIN_PASSCODE;
-  const supplied = request.headers.get("x-admin-passcode");
-  return Boolean(configured && supplied && configured === supplied);
-}
-
 export async function GET(request: NextRequest) {
-  if (!authorized(request)) {
+  const admin = await getAuthorizedAdmin(request);
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -62,7 +58,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  if (!authorized(request)) {
+  const admin = await getAuthorizedAdmin(request);
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
