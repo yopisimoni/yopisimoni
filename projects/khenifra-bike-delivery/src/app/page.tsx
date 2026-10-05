@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { FormEvent, useState } from "react";
 import {
   Bike,
@@ -34,7 +36,7 @@ const copy = {
     food: "طلب طعام", groceries: "مشتريات / طلب متجر", documents: "وثائق", parcel: "طرد صغير",
     senderPhone: "هاتف المرسل", recipientPhone: "هاتف المستلم", phonePlaceholder: "06XXXXXXXX",
     notes: "ملاحظات", notesPlaceholder: "معلومات تساعد السائق في الاستلام أو التسليم",
-    estimate: "إنشاء طلب تجريبي", cash: "الدفع نقداً في النسخة الأولى. سيظهر السعر النهائي قبل التأكيد.",
+    estimate: "إنشاء طلب تجريبي", cash: "الدفع نقداً في النسخة التجريبية. لا يُحسب السعر هنا؛ اتفق عليه مع الإدارة قبل الاستلام.",
     network: "شبكة توصيل واحدة", useful: "مفيدة من اليوم الأول",
     services: [
       ["استلام من المطاعم", "نستلم طلبك من مطعم محلي ونوصله إلى بابك."],
@@ -59,7 +61,7 @@ const copy = {
     documents: "Documents", parcel: "Petit colis", senderPhone: "Téléphone expéditeur",
     recipientPhone: "Téléphone destinataire", phonePlaceholder: "06XXXXXXXX", notes: "Notes",
     notesPlaceholder: "Informations utiles pour le ramassage ou la livraison",
-    estimate: "Créer une demande test", cash: "Paiement en espèces pour le pilote. Le prix final sera affiché avant confirmation.",
+    estimate: "Créer une demande test", cash: "Paiement en espèces pour le pilote. Le prix n’est pas calculé ici ; convenez-en avec la coordination avant le ramassage.",
     network: "UN SEUL RÉSEAU DE LIVREURS", useful: "Utile dès le premier jour",
     services: [
       ["Ramassage restaurant", "Nous récupérons votre commande dans un restaurant local et la livrons chez vous."],
@@ -83,7 +85,7 @@ const copy = {
     documents: "Documents", parcel: "Small parcel", senderPhone: "Sender phone",
     recipientPhone: "Recipient phone", phonePlaceholder: "06XXXXXXXX", notes: "Notes",
     notesPlaceholder: "Anything the rider should know for pickup or drop-off",
-    estimate: "Create test request", cash: "Cash-first pilot. Final price shown before confirming.",
+    estimate: "Create test request", cash: "Cash pilot. Price is not calculated here; agree it with dispatch before pickup.",
     network: "ONE RIDER NETWORK", useful: "Useful from day one",
     services: [
       ["Restaurant pickup", "Pick up an order from a local restaurant and bring it to your door."],
@@ -104,6 +106,7 @@ const ServiceIcons = [UtensilsCrossed, Store, FileText, Package];
 export default function Home() {
   const [lang, setLang] = useState<Lang>("ar");
   const [orderCode, setOrderCode] = useState("");
+  const [deliveryId, setDeliveryId] = useState("");
   const [deliveryPin, setDeliveryPin] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -130,6 +133,7 @@ export default function Home() {
         pickupLng: pickupCoords?.lng,
       });
       setOrderCode(delivery.orderCode);
+      setDeliveryId(delivery.id);
       setDeliveryPin(delivery.deliveryPin || "");
     } catch (error) {
       console.error(error);
@@ -194,7 +198,10 @@ export default function Home() {
                   <span>{lang === "ar" ? "أعطِ هذا الرمز للسائق فقط عند استلام طلبك." : lang === "fr" ? "Donnez ce code au livreur uniquement lorsque vous recevez votre commande." : "Give this PIN to the rider only when you receive your order."}</span>
                 </div>
               ) : null}
-              <button type="button" onClick={() => { setOrderCode(""); setDeliveryPin(""); }}>{t.reset}</button>
+              {deliveryId ? <Link className="authNavPrimary" href={`/track/${deliveryId}`}>
+                {lang === "ar" ? "تتبع طلبك" : lang === "fr" ? "Suivre ma livraison" : "Track my delivery"}
+              </Link> : null}
+              <button type="button" onClick={() => { setOrderCode(""); setDeliveryPin(""); setDeliveryId(""); }}>{t.reset}</button>
             </div>
           ) : (
             <form onSubmit={submitRequest}>
@@ -203,7 +210,7 @@ export default function Home() {
                 <Navigation size={22}/>
               </div>
               <h2>{t.where}</h2>
-              <div className="labelActionRow"><label><MapPin size={15}/>{t.pickup}</label><button type="button" className="locationMiniButton" onClick={() => {
+              <div className="labelActionRow"><label htmlFor="pickup"><MapPin size={15}/>{t.pickup}</label><button type="button" className="locationMiniButton" onClick={() => {
                 setLocating(true);
                 void getCurrentAppPosition()
                   .then((position) => {
@@ -214,11 +221,11 @@ export default function Home() {
                   })
                   .finally(() => setLocating(false));
               }}><Navigation size={14}/>{pickupCoords ? (lang==="ar"?"تم تحديد الموقع":lang==="fr"?"Position ajoutée":"Location added") : locating ? "..." : (lang==="ar"?"استخدم موقعي":lang==="fr"?"Ma position":"Use my location")}</button></div>
-              <input name="pickup" required placeholder={t.pickupPlaceholder} />
-              <label><Navigation size={15}/>{t.dropoff}</label>
-              <input name="dropoff" required placeholder={t.dropoffPlaceholder} />
-              <label><Package size={15}/>{t.carrying}</label>
-              <select name="category" defaultValue="" required>
+              <input id="pickup" name="pickup" required placeholder={t.pickupPlaceholder} />
+              <label htmlFor="dropoff"><Navigation size={15}/>{t.dropoff}</label>
+              <input id="dropoff" name="dropoff" required placeholder={t.dropoffPlaceholder} />
+              <label htmlFor="category"><Package size={15}/>{t.carrying}</label>
+              <select id="category" name="category" defaultValue="" required>
                 <option value="" disabled>{t.choose}</option>
                 <option value="food">{t.food}</option>
                 <option value="groceries">{t.groceries}</option>
@@ -226,11 +233,11 @@ export default function Home() {
                 <option value="parcel">{t.parcel}</option>
               </select>
               <div className="twoCols">
-                <div><label><Phone size={15}/>{t.senderPhone}</label><input name="senderPhone" type="tel" required placeholder={t.phonePlaceholder} /></div>
-                <div><label><Phone size={15}/>{t.recipientPhone}</label><input name="recipientPhone" type="tel" required placeholder={t.phonePlaceholder} /></div>
+                <div><label htmlFor="senderPhone"><Phone size={15}/>{t.senderPhone}</label><input id="senderPhone" name="senderPhone" type="tel" required placeholder={t.phonePlaceholder} /></div>
+                <div><label htmlFor="recipientPhone"><Phone size={15}/>{t.recipientPhone}</label><input id="recipientPhone" name="recipientPhone" type="tel" required placeholder={t.phonePlaceholder} /></div>
               </div>
-              <label><FileText size={15}/>{t.notes}</label>
-              <textarea name="notes" rows={3} placeholder={t.notesPlaceholder} />
+              <label htmlFor="notes"><FileText size={15}/>{t.notes}</label>
+              <textarea id="notes" name="notes" rows={3} placeholder={t.notesPlaceholder} />
               <button type="submit" disabled={submitting} className="submitWithIcon">
                 <Send size={18}/>{submitting ? "..." : t.estimate}
               </button>
