@@ -140,7 +140,7 @@ export default function SiteNav({
             </div>
 
             <div className="desktopAuth">
-              <AuthNav />
+              <AuthNav lang={lang} />
             </div>
 
             <button
@@ -188,7 +188,7 @@ export default function SiteNav({
                 <button className={lang === "fr" ? "active" : ""} onClick={() => onLanguageChange("fr")}>Français</button>
                 <button className={lang === "en" ? "active" : ""} onClick={() => onLanguageChange("en")}>English</button>
               </div>
-              <div className="mobileAuthWrap"><AuthNav /></div>
+              <div className="mobileAuthWrap"><AuthNav lang={lang} /></div>
             </div>
           </aside>
         </div>
