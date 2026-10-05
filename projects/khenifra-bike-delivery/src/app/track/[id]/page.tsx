@@ -158,6 +158,17 @@ export default function TrackDeliveryPage() {
         </section>
       </div>
 
+      {data.events?.length ? (
+        <section className="trackingCard" aria-label="سجل التوصيل">
+          <h2>سجل التوصيل</h2>
+          <ol>{data.events.map((event: {id: string; status: string; createdAt: string}) => (
+            <li key={event.id}><strong>{labels[event.status] || event.status}</strong>{" — "}
+              <time dateTime={event.createdAt}>{new Date(event.createdAt).toLocaleString("ar-MA")}</time>
+            </li>
+          ))}</ol>
+        </section>
+      ) : null}
+
       {delivery.status === "delivered" && !data.feedbackSubmitted ? (
         <section className="feedbackCard">
           <div className="sectionTitleIcon"><Star size={21}/><h2>كيف كانت تجربة التوصيل؟</h2></div>

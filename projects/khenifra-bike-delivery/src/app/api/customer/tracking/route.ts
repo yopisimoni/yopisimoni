@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Query } from "node-appwrite";
+import { customerTimeline } from "@/lib/tracking-events";
 import { adminDatabaseId, adminTablesDB, listAllRows } from "@/lib/appwrite/admin-server";
 import { getUserFromJWT } from "@/lib/appwrite/auth-server";
 
@@ -104,7 +106,15 @@ export async function POST(request: NextRequest) {
       );
     } catch {}
 
+    const eventRows = await listAllRows({
+      databaseId: adminDatabaseId,
+      tableId: process.env.NEXT_PUBLIC_APPWRITE_DELIVERY_EVENTS_TABLE_ID || "delivery_events",
+      queries: [Query.equal("delivery_id", deliveryId)],
+    });
+    const events = customerTimeline(eventRows.rows, deliveryId, user.$id);
+
     return NextResponse.json({
+      events,
       delivery: {
         id: delivery.$id,
         orderCode: delivery.order_code,

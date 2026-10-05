@@ -8,7 +8,7 @@ Pagination now traverses all Appwrite rows rather than stopping at 25; admin ava
 - KBD-02: agreed quote/pricing policy and real mobile AR/FR/EN request-flow tests, with customer approval before pickup.
 - KBD-03: authenticated dispatch/reassignment/cancellation/private incident acceptance tests against the real Appwrite project. Recheck concurrency under two dispatchers.
 - KBD-04: real authenticated availability, accept/decline, pickup, navigation, PIN, earnings and location tests. Review mixed-language screens.
-- KBD-05: actual event timeline and revocable, privacy-safe shareable tracking remain outstanding. Existing owner-authenticated tracking and PIN do not prove those acceptance criteria. Agree retention/deletion policy before storing location history; current implementation overwrites the latest position rather than storing a trail.
+- KBD-05: A timestamped owner event timeline is implemented with explicit permission filtering and no notes/actor identifiers. Revocable, privacy-safe shareable tracking remains outstanding. Existing owner-authenticated tracking and PIN do not prove those acceptance criteria. Agree retention/deletion policy before storing location history; current implementation overwrites the latest position rather than storing a trail.
 - Deployment: Vercel connection can list projects but cannot access the team's deployment scope. Builds prove compilation, not live deployment or pilot completion.
 
 ## Interview log (one row per consented interview)
