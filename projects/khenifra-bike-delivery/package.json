@@ -14,31 +14,32 @@
     "mobile:android": "npx cap sync android && npx cap open android",
     "mobile:ios": "npx cap sync ios && npx cap open ios",
     "mobile:configure": "node scripts/configure-native.mjs",
-    "mobile:setup": "npm install && npm run mobile:add:android && npm run mobile:add:ios && npm run mobile:configure && npm run mobile:sync"
+    "mobile:setup": "npm install && npm run mobile:add:android && npm run mobile:add:ios && npm run mobile:configure && npm run mobile:sync",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
+    "next": "16.3.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "appwrite": "28.1.0",
-    "node-appwrite": "latest",
-    "lucide-react": "latest",
-    "@capacitor/core": "latest",
-    "@capacitor/android": "latest",
-    "@capacitor/ios": "latest",
-    "@capacitor/geolocation": "latest",
-    "@capacitor/app": "latest",
-    "@capacitor/browser": "latest",
-    "@capacitor/status-bar": "latest",
-    "@capacitor/splash-screen": "latest"
+    "node-appwrite": "29.0.0",
+    "lucide-react": "1.52.0",
+    "@capacitor/core": "8.5.2",
+    "@capacitor/android": "8.5.2",
+    "@capacitor/ios": "8.5.2",
+    "@capacitor/geolocation": "8.2.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/browser": "8.0.5",
+    "@capacitor/status-bar": "8.0.4",
+    "@capacitor/splash-screen": "8.0.2"
   },
   "devDependencies": {
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "typescript": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
-    "@capacitor/cli": "latest"
+    "@types/node": "26.6.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "6.0.3",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.8",
+    "@capacitor/cli": "8.5.2"
   }
 }

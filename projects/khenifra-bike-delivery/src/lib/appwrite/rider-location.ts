@@ -1,4 +1,5 @@
 import { ID, Permission, Query, Role } from "appwrite";
+import { collectRows } from "@/lib/pagination";
 import { account, tablesDB } from "@/lib/appwrite/client";
 
 const databaseId =
@@ -21,11 +22,11 @@ export async function getMyRiderState() {
       tableId: ridersTableId,
       queries: [Query.equal("user_id", [user.$id]), Query.limit(1)],
     }),
-    tablesDB.listRows({
+    collectRows((cursor) => tablesDB.listRows({
       databaseId,
       tableId: deliveriesTableId,
-      queries: [Query.equal("rider_id", [user.$id]), Query.limit(25)],
-    }),
+      queries: [Query.equal("rider_id", [user.$id]), Query.orderAsc("$id"), Query.limit(100), ...(cursor ? [Query.cursorAfter(cursor)] : [])],
+    })),
   ]);
 
   let location = null;
@@ -101,7 +102,7 @@ export async function setRiderAvailability({
 
 export async function updateAssignedDelivery(
   deliveryId: string,
-  action: "advance" | "deliver",
+  action: "advance" | "deliver" | "decline",
   pin?: string
 ) {
   const jwt = await account.createJWT();

@@ -81,6 +81,7 @@ export default function AdminDispatchPage() {
   const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [incidentNotes, setIncidentNotes] = useState<Record<string, string>>({});
   const [filter, setFilter] = useState<"active" | "all" | "completed">("active");
 
   async function load() {
@@ -135,6 +136,16 @@ export default function AdminDispatchPage() {
     }
 
     return json;
+  }
+
+  async function saveIncident(deliveryId: string) {
+    const note = (incidentNotes[deliveryId] || "").trim();
+    if (!note) return;
+    try {
+      await patch({ action: "incident", deliveryId, note });
+      setIncidentNotes((current) => ({ ...current, [deliveryId]: "" }));
+      setError("");
+    } catch (err) { setError(err instanceof Error ? err.message : "تعذر حفظ الملاحظة"); }
   }
 
   async function assignNearest(deliveryId: string) {
@@ -345,7 +356,7 @@ export default function AdminDispatchPage() {
                 <button
                   className="nearestAssignButton"
                   disabled={
-                    delivery.pickupLat == null || delivery.pickupLng == null
+                    delivery.pickupLat == null || delivery.pickupLng == null || !["requested", "assigned", "rider_to_pickup"].includes(delivery.status)
                   }
                   onClick={() => void assignNearest(delivery.id)}
                 >
@@ -364,6 +375,7 @@ export default function AdminDispatchPage() {
                 <label>
                   <span><Bike size={14} />السائق</span>
                   <select
+                    disabled={!["requested", "assigned", "rider_to_pickup"].includes(delivery.status)}
                     value={delivery.riderId || ""}
                     onChange={(event) =>
                       void assign(delivery.id, event.target.value)
@@ -411,6 +423,13 @@ export default function AdminDispatchPage() {
                     placeholder="مثال: 15"
                   />
                 </label>
+              </div>
+
+              <div className="dispatchControls">
+                <label><span>ملاحظة عن مشكلة في التوصيل</span>
+                  <input maxLength={1000} value={incidentNotes[delivery.id] || ""} onChange={(event) => setIncidentNotes((current) => ({ ...current, [delivery.id]: event.target.value }))}/>
+                </label>
+                <button disabled={!(incidentNotes[delivery.id] || "").trim()} onClick={() => void saveIncident(delivery.id)}>حفظ الملاحظة</button>
               </div>
 
               <div className="deliveryMeta">

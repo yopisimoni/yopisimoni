@@ -1,6 +1,6 @@
 import { ID, Permission, Role } from "node-appwrite";
 import { NextRequest, NextResponse } from "next/server";
-import { adminDatabaseId, adminTablesDB } from "@/lib/appwrite/admin-server";
+import { adminDatabaseId, adminTablesDB, listAllRows } from "@/lib/appwrite/admin-server";
 import { getUserFromJWT } from "@/lib/appwrite/auth-server";
 
 const deliveriesTableId =
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Feedback not allowed" }, { status: 403 });
     }
 
-    const existing = await adminTablesDB.listRows({
+    const existing = await listAllRows({
       databaseId: adminDatabaseId,
       tableId: feedbackTableId,
     });

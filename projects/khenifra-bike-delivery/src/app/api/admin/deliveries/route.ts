@@ -1,6 +1,6 @@
 import { ID, Permission, Role } from "node-appwrite";
 import { NextRequest, NextResponse } from "next/server";
-import { adminDatabaseId, adminTablesDB } from "@/lib/appwrite/admin-server";
+import { adminDatabaseId, adminTablesDB, listAllRows } from "@/lib/appwrite/admin-server";
 import { getAuthorizedAdmin } from "@/lib/appwrite/admin-auth-server";
 
 const deliveriesTableId =
@@ -38,12 +38,16 @@ async function createEvent({
   riderId,
   status,
   note,
+  actorId,
+  internal,
 }: {
   deliveryId: string;
   customerId: string;
   riderId?: string | null;
   status: (typeof statuses)[number];
   note?: string;
+  actorId?: string;
+  internal?: boolean;
 }) {
   const now = new Date().toISOString();
 
@@ -55,10 +59,10 @@ async function createEvent({
       delivery_id: deliveryId,
       status,
       note: note || null,
-      actor_id: null,
+      actor_id: actorId || null,
       created_at: now,
     },
-    permissions: participantPermissions(customerId, riderId),
+    permissions: internal ? [] : participantPermissions(customerId, riderId),
   });
 }
 
@@ -69,19 +73,20 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const [deliveries, riders, profiles] = await Promise.all([
-      adminTablesDB.listRows({
+    const [deliveries, riders, profiles, locations] = await Promise.all([
+      listAllRows({
         databaseId: adminDatabaseId,
         tableId: deliveriesTableId,
       }),
-      adminTablesDB.listRows({
+      listAllRows({
         databaseId: adminDatabaseId,
         tableId: ridersTableId,
       }),
-      adminTablesDB.listRows({
+      listAllRows({
         databaseId: adminDatabaseId,
         tableId: profilesTableId,
       }),
+      listAllRows({ databaseId: adminDatabaseId, tableId: locationsTableId }),
     ]);
 
     const profileByUser = new Map(
@@ -98,7 +103,7 @@ export async function GET(request: NextRequest) {
           fullName: profile?.full_name || "",
           phone: profile?.phone || "",
           vehicleType: rider.vehicle_type,
-          isOnline: rider.is_online,
+          isOnline: locations.rows.some((location: any) => location.user_id === rider.user_id && location.is_available && Date.now() - new Date(location.updated_at).getTime() <= 5 * 60 * 1000),
         };
       });
 
@@ -170,14 +175,27 @@ export async function PATCH(request: NextRequest) {
       rowId: deliveryId,
     });
 
+    if (["assign", "assign_nearest"].includes(action) && !["requested", "assigned", "rider_to_pickup"].includes(delivery.status)) {
+      return NextResponse.json({ error: "This delivery cannot be reassigned after pickup or closure" }, { status: 409 });
+    }
+
+    if (action === "incident") {
+      const note = String(body.note || "").trim();
+      if (!note || note.length > 1000) {
+        return NextResponse.json({ error: "Incident note must contain 1–1000 characters" }, { status: 400 });
+      }
+      await createEvent({ deliveryId, customerId: delivery.customer_id, riderId: delivery.rider_id, status: delivery.status, note: "Admin incident: " + note, actorId: admin.$id, internal: true });
+      return NextResponse.json({ ok: true });
+    }
+
     if (action === "assign_nearest") {
       if (typeof delivery.pickup_lat !== "number" || typeof delivery.pickup_lng !== "number") {
         return NextResponse.json({ error: "Pickup location is missing" }, { status: 400 });
       }
 
       const [riderRows, locationRows] = await Promise.all([
-        adminTablesDB.listRows({ databaseId: adminDatabaseId, tableId: ridersTableId }),
-        adminTablesDB.listRows({ databaseId: adminDatabaseId, tableId: locationsTableId }),
+        listAllRows({ databaseId: adminDatabaseId, tableId: ridersTableId }),
+        listAllRows({ databaseId: adminDatabaseId, tableId: locationsTableId }),
       ]);
 
       const approvedIds = new Set(
@@ -186,7 +204,7 @@ export async function PATCH(request: NextRequest) {
 
       const freshCutoff = Date.now() - 5 * 60 * 1000;
       const busyIds = new Set(
-        (await adminTablesDB.listRows({
+        (await listAllRows({
           databaseId: adminDatabaseId,
           tableId: deliveriesTableId,
         })).rows
@@ -283,7 +301,7 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: "Missing rider" }, { status: 400 });
       }
 
-      const riderRows = await adminTablesDB.listRows({
+      const riderRows = await listAllRows({
         databaseId: adminDatabaseId,
         tableId: ridersTableId,
       });
@@ -336,6 +354,9 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: "Invalid status" }, { status: 400 });
       }
 
+      if (["delivered", "cancelled", "failed"].includes(delivery.status) && status !== delivery.status) {
+        return NextResponse.json({ error: "Closed deliveries cannot be reopened through status changes" }, { status: 409 });
+      }
       const now = new Date().toISOString();
       const data: Record<string, unknown> = { status };
 

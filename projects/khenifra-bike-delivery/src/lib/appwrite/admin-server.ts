@@ -1,4 +1,4 @@
-import { Client, TablesDB } from "node-appwrite";
+import { Client, Query, TablesDB } from "node-appwrite";
 
 const endpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || "https://fra.cloud.appwrite.io/v1";
 const projectId = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || "6abc6d6f002d62e54e76";
@@ -16,3 +16,14 @@ const client = new Client()
 
 export const adminTablesDB = new TablesDB(client);
 export const adminDatabaseId = databaseId;
+
+export async function listAllRows({ databaseId, tableId, queries = [] }: {
+  databaseId: string; tableId: string; queries?: string[];
+}) {
+  const { collectRows } = await import("@/lib/pagination");
+  return collectRows((cursor) => adminTablesDB.listRows({
+    databaseId,
+    tableId,
+    queries: [...queries, Query.orderAsc("$id"), Query.limit(100), ...(cursor ? [Query.cursorAfter(cursor)] : [])],
+  }));
+}

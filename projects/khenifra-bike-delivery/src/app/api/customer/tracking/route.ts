@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminDatabaseId, adminTablesDB } from "@/lib/appwrite/admin-server";
+import { adminDatabaseId, adminTablesDB, listAllRows } from "@/lib/appwrite/admin-server";
 import { getUserFromJWT } from "@/lib/appwrite/auth-server";
 
 const deliveriesTableId =
@@ -47,15 +47,15 @@ export async function POST(request: NextRequest) {
 
     if (delivery.rider_id) {
       const [profiles, riders, locations] = await Promise.all([
-        adminTablesDB.listRows({
+        listAllRows({
           databaseId: adminDatabaseId,
           tableId: profilesTableId,
         }),
-        adminTablesDB.listRows({
+        listAllRows({
           databaseId: adminDatabaseId,
           tableId: ridersTableId,
         }),
-        adminTablesDB.listRows({
+        listAllRows({
           databaseId: adminDatabaseId,
           tableId: locationsTableId,
         }),
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     let feedbackSubmitted = false;
     try {
-      const feedback = await adminTablesDB.listRows({
+      const feedback = await listAllRows({
         databaseId: adminDatabaseId,
         tableId: feedbackTableId,
       });

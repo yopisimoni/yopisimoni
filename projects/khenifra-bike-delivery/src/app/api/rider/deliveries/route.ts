@@ -1,6 +1,6 @@
 import { ID, Permission, Role } from "node-appwrite";
 import { NextRequest, NextResponse } from "next/server";
-import { adminDatabaseId, adminTablesDB } from "@/lib/appwrite/admin-server";
+import { adminDatabaseId, adminTablesDB, listAllRows } from "@/lib/appwrite/admin-server";
 import { getUserFromJWT } from "@/lib/appwrite/auth-server";
 import { deliveryPin } from "@/lib/delivery-pin";
 
@@ -76,7 +76,7 @@ export async function PATCH(request: NextRequest) {
         tableId: deliveriesTableId,
         rowId: deliveryId,
       }),
-      adminTablesDB.listRows({
+      listAllRows({
         databaseId: adminDatabaseId,
         tableId: ridersTableId,
       }),
@@ -91,6 +91,19 @@ export async function PATCH(request: NextRequest) {
     }
 
     const current = String((delivery as any).status);
+
+    if (action === "decline") {
+      if (current !== "assigned") {
+        return NextResponse.json({ error: "Only a newly assigned job can be declined" }, { status: 409 });
+      }
+      await adminTablesDB.updateRow({
+        databaseId: adminDatabaseId, tableId: deliveriesTableId, rowId: deliveryId,
+        data: { rider_id: null, status: "requested", assigned_at: null },
+        permissions: [Permission.read(Role.user((delivery as any).customer_id))],
+      });
+      await createEvent(delivery, user.$id, "requested", "Rider declined assignment; returned to dispatch");
+      return NextResponse.json({ delivery: { id: deliveryId, status: "requested" } });
+    }
 
     if (action === "advance") {
       const status = nextStatus[current];

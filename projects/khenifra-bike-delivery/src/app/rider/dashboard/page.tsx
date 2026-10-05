@@ -177,6 +177,17 @@ export default function RiderDashboard() {
     }
   }
 
+  async function decline(deliveryId: string) {
+    setBusyDelivery(deliveryId);
+    setError("");
+    try {
+      await updateAssignedDelivery(deliveryId, "decline");
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذر رفض الطلب.");
+    } finally { setBusyDelivery(""); }
+  }
+
   async function deliver(deliveryId: string) {
     const pin = (pins[deliveryId] || "").trim();
     if (!/^\d{4}$/.test(pin)) {
@@ -283,6 +294,12 @@ export default function RiderDashboard() {
                 >
                   {delivery.status === "assigned" ? <Bike size={18}/> : delivery.status === "rider_to_pickup" ? <Package size={18}/> : <Truck size={18}/>}
                   {busyDelivery === delivery.$id ? "..." : actionLabel(delivery.status)}
+                </button>
+              ) : null}
+
+              {delivery.status === "assigned" ? (
+                <button className="riderPrimaryAction" disabled={busyDelivery === delivery.$id} onClick={() => void decline(delivery.$id)}>
+                  رفض الطلب وإعادته للإدارة
                 </button>
               ) : null}
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminDatabaseId, adminTablesDB } from "@/lib/appwrite/admin-server";
+import { adminDatabaseId, adminTablesDB, listAllRows } from "@/lib/appwrite/admin-server";
 import { getAuthorizedAdmin } from "@/lib/appwrite/admin-auth-server";
 
 const deliveriesTableId =
@@ -25,19 +25,19 @@ export async function GET(request: NextRequest) {
   try {
     const [deliveriesResult, ridersResult, profilesResult, feedbackResult] =
       await Promise.all([
-        adminTablesDB.listRows({
+        listAllRows({
           databaseId: adminDatabaseId,
           tableId: deliveriesTableId,
         }),
-        adminTablesDB.listRows({
+        listAllRows({
           databaseId: adminDatabaseId,
           tableId: ridersTableId,
         }),
-        adminTablesDB.listRows({
+        listAllRows({
           databaseId: adminDatabaseId,
           tableId: profilesTableId,
         }),
-        adminTablesDB.listRows({
+        listAllRows({
           databaseId: adminDatabaseId,
           tableId: feedbackTableId,
         }).catch(() => ({ rows: [] as any[] })),
